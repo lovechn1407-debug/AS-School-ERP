@@ -95,6 +95,32 @@ if (file_exists($carbonCreatorPath) && !trait_exists('Carbon\\Traits\\Creator', 
     }
 }
 
+// RUNTIME PATCH: Carbon's Units trait for PHP 8.0+ operand compatibility.
+// In PHP 8.0+, passing non-numeric strings (like '') to date arithmetic methods
+// throws "TypeError: Unsupported operand types: string * int".
+// We pre-load the patched Units trait to cast operands safely.
+$carbonUnitsPath = __DIR__ . '/../vendor/nesbot/carbon/src/Carbon/Traits/Units.php';
+if (file_exists($carbonUnitsPath) && !trait_exists('Carbon\\Traits\\Units', false)) {
+    $patchedUnitsFile = '/tmp/carbon_units_patched.php';
+    if (!file_exists($patchedUnitsFile)) {
+        $content = file_get_contents($carbonUnitsPath);
+        $content = str_replace(
+            '$value *',
+            '((float) ($value ?? 0)) *',
+            $content
+        );
+        $content = str_replace(
+            '$count *',
+            '((float) ($count ?? 0)) *',
+            $content
+        );
+        file_put_contents($patchedUnitsFile, $content);
+    }
+    if (file_exists($patchedUnitsFile)) {
+        require_once $patchedUnitsFile;
+    }
+}
+
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
 // Bind storage path to writable /tmp directory on serverless runtimes
