@@ -21,6 +21,14 @@ import ReportCard from './pages/Parent/ReportCard';
 import FeeStatus from './pages/Parent/FeeStatus';
 import Profile from './pages/Profile';
 
+// Student Panel New Pages
+import Attendance from './pages/Student/Attendance';
+import Homework from './pages/Student/Homework';
+import Circular from './pages/Student/Circular';
+import PhotoGallery from './pages/Student/PhotoGallery';
+import Communication from './pages/Student/Communication';
+import NewsEvents from './pages/Student/NewsEvents';
+
 function MainLayout() {
   const { currentUser } = useAuth();
   const [activePage, setActivePage] = useState('dashboard');
@@ -63,6 +71,24 @@ function MainLayout() {
         return <FeeStatus />;
       case 'profile':
         return <Profile />;
+      
+      // Student Panel Submenu & Routes
+      case 'attendance':
+      case 'attendance-periodwise':
+        return <Attendance defaultTab="periodwise" />;
+      case 'attendance-leave':
+        return <Attendance defaultTab="leave" />;
+      case 'homework':
+        return <Homework />;
+      case 'circular':
+        return <Circular />;
+      case 'photo-gallery':
+        return <PhotoGallery />;
+      case 'communication':
+        return <Communication />;
+      case 'news-events':
+        return <NewsEvents />;
+
       default:
         return <Dashboard />;
     }

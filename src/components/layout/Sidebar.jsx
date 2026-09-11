@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { 
   LayoutDashboard, 
@@ -16,11 +16,25 @@ import {
   UserPlus,
   Receipt,
   X,
-  UserCheck
+  UserCheck,
+  CalendarCheck,
+  BookOpenCheck,
+  Megaphone,
+  Image as ImageIcon,
+  MessageSquare,
+  Newspaper,
+  FileText,
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIsMobileOpen }) {
   const { currentUser, logout } = useAuth();
+  const [openSubmenu, setOpenSubmenu] = useState('attendance');
+
+  const toggleSubmenu = (id) => {
+    setOpenSubmenu(prev => prev === id ? null : id);
+  };
 
   const getNavItems = () => {
     switch(currentUser?.role) {
@@ -79,6 +93,20 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
       case 'student':
         return [
           { id: 'dashboard', label: 'Student Dashboard', icon: LayoutDashboard },
+          { 
+            id: 'attendance', 
+            label: 'Daily Attendance', 
+            icon: CalendarCheck,
+            children: [
+              { id: 'attendance-periodwise', label: 'Periodwise Attendance', icon: Clock },
+              { id: 'attendance-leave', label: 'Leave Application', icon: FileText }
+            ]
+          },
+          { id: 'homework', label: 'Homework', icon: BookOpenCheck },
+          { id: 'circular', label: 'Circular', icon: Megaphone },
+          { id: 'photo-gallery', label: 'Photo Gallery', icon: ImageIcon },
+          { id: 'communication', label: 'Communication', icon: MessageSquare },
+          { id: 'news-events', label: 'News & Events', icon: Newspaper },
           { id: 'report-card', label: 'My Report Card', icon: Award },
           { id: 'timetable', label: 'My Timetable', icon: Clock },
           { id: 'fee-status', label: 'Fee Invoices', icon: CreditCard }
@@ -111,7 +139,9 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
               className="w-9 h-9 rounded-lg object-cover border border-slate-300 shrink-0"
             />
             <div className="overflow-hidden">
-              <h3 className="text-xs font-bold text-slate-900 truncate">{currentUser?.name}</h3>
+              <h3 className="text-xs font-bold text-slate-900 truncate">
+                {(currentUser?.name || '').replace(/\s*\([^)]*\)/g, '')}
+              </h3>
               <span className="text-[10px] font-medium text-slate-500 truncate block">{currentUser?.email}</span>
             </div>
           </div>
@@ -127,13 +157,69 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
         </div>
 
         {/* Navigation List */}
-        <div className="overflow-y-auto max-h-[calc(100vh-240px)] custom-scrollbar">
+        <div className="overflow-y-auto max-h-[calc(100vh-240px)] custom-scrollbar pr-1">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 block">
             Navigation
           </span>
           <nav className="space-y-1">
             {navItems.map(item => {
               const Icon = item.icon;
+              const hasChildren = item.children && item.children.length > 0;
+              const isSubOpen = openSubmenu === item.id || activePage.startsWith(item.id);
+              const isParentActive = activePage === item.id || activePage.startsWith(item.id);
+
+              if (hasChildren) {
+                return (
+                  <div key={item.id} className="space-y-1">
+                    <button
+                      onClick={() => {
+                        toggleSubmenu(item.id);
+                        handleNavClick(item.children[0].id);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
+                        isParentActive 
+                          ? 'bg-brand-50 text-brand-700 font-bold border border-brand-200/60'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon className={`w-4 h-4 ${isParentActive ? 'text-brand-600' : 'text-slate-400'}`} />
+                        <span>{item.label}</span>
+                      </div>
+                      {isSubOpen ? (
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                      ) : (
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                      )}
+                    </button>
+
+                    {/* Submenu Accordion */}
+                    {isSubOpen && (
+                      <div className="pl-6 space-y-1 border-l-2 border-slate-200 ml-4 py-1">
+                        {item.children.map(sub => {
+                          const SubIcon = sub.icon;
+                          const isSubActive = activePage === sub.id;
+                          return (
+                            <button
+                              key={sub.id}
+                              onClick={() => handleNavClick(sub.id)}
+                              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[11px] font-medium transition-all ${
+                                isSubActive 
+                                  ? 'bg-brand-600 text-white font-bold shadow-2xs' 
+                                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                              }`}
+                            >
+                              <SubIcon className={`w-3.5 h-3.5 ${isSubActive ? 'text-white' : 'text-slate-400'}`} />
+                              <span>{sub.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
               const isActive = activePage === item.id;
               return (
                 <button
