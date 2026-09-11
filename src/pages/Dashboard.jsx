@@ -384,18 +384,18 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       
-      {/* Outstanding Centered Circular Profile Card */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-md overflow-hidden relative">
+      {/* Centered Circular Profile Card (Clean Minimal - No Capsule Boxes) */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden relative">
         {/* Top Cover Banner */}
-        <div className="h-32 sm:h-36 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 relative overflow-hidden flex items-center justify-end p-4">
+        <div className="h-32 sm:h-36 bg-gradient-to-r from-indigo-600 via-brand-600 to-purple-600 relative overflow-hidden flex items-center justify-end p-4">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-black/20 pointer-events-none"></div>
-          {/* Session Selector Badge in top-right of banner */}
-          <div className="relative z-10 bg-black/20 backdrop-blur-md border border-white/20 rounded-xl px-3 py-1.5 flex items-center gap-2">
+          {/* Subtle Session selector in top right (Rectangular rounded-lg, no capsule) */}
+          <div className="relative z-10 bg-black/20 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-1.5 flex items-center gap-1.5">
             <Calendar className="w-3.5 h-3.5 text-white/80" />
             <select 
               value={selectedSession}
               onChange={e => setSelectedSession(e.target.value)}
-              className="bg-transparent font-bold text-white text-xs focus:outline-none cursor-pointer pr-1"
+              className="bg-transparent font-semibold text-white text-xs focus:outline-none cursor-pointer"
             >
               <option value="2026-2027" className="text-slate-900">2026-2027 Session</option>
               <option value="2025-2026" className="text-slate-900">2025-2026 Session</option>
@@ -412,34 +412,27 @@ export default function Dashboard() {
               alt={currentUser?.name || "Ethan Miller"} 
               className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-xl object-cover bg-white mx-auto"
             />
-            <span className="absolute bottom-1 right-2 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full shadow-sm" title="Active Student"></span>
+            <span className="absolute bottom-1 right-2 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" title="Active Student"></span>
           </div>
 
-          {/* 1. Name on Card */}
+          {/* Student Name */}
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-3">
             {currentUser?.name || "Ethan Miller"}
           </h1>
 
-          {/* 2. Class Section */}
-          <div className="mt-1 flex items-center justify-center gap-2 text-slate-600 font-semibold text-xs sm:text-sm">
-            <GraduationCap className="w-4 h-4 text-brand-600" />
-            <span>Class: <strong className="text-slate-900">{currentUser?.class || 'Grade 10'} ({currentUser?.section || 'Section A'})</strong></span>
-          </div>
+          {/* Clean Aligned Class & Admission Number (No capsule boxes!) */}
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm text-slate-600 font-medium">
+            <div className="flex items-center gap-1.5">
+              <GraduationCap className="w-4 h-4 text-brand-600 shrink-0" />
+              <span>Class: <strong className="text-slate-900 font-semibold">{currentUser?.class || 'Grade 10'} ({currentUser?.section || 'Section A'})</strong></span>
+            </div>
 
-          {/* 3. Admission Number */}
-          <div className="mt-2 flex items-center justify-center gap-2 text-slate-500 text-xs">
-            <Hash className="w-3.5 h-3.5 text-slate-400" />
-            <span>Admission No: <strong className="font-mono text-slate-800 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-md">{currentUser?.admissionNo || 'STU-2026-0042'}</strong></span>
-          </div>
+            <span className="text-slate-300 font-bold">&bull;</span>
 
-          {/* 4. Academic Session */}
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-            <span className="bg-brand-50 text-brand-700 border border-brand-200 px-3.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs">
-              <Calendar className="w-3.5 h-3.5" /> Academic Session: {selectedSession}
-            </span>
-            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs">
-              <CheckCircle2 className="w-3.5 h-3.5" /> 96% Attendance
-            </span>
+            <div className="flex items-center gap-1.5">
+              <Hash className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span>Admission No: <strong className="font-mono text-slate-900 font-semibold">{currentUser?.admissionNo || 'STU-2026-0042'}</strong></span>
+            </div>
           </div>
 
         </div>
