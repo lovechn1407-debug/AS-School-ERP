@@ -173,34 +173,19 @@ Route::group(['namespace' => 'MyParent','middleware' => 'my_parent',], function(
 
 /************************ DATABASE MIGRATION ROUTE ****************************/
 Route::get('/migrate-db', function () {
+    $out = '';
     try {
-        // Drop all existing tables in public schema using DB::unprepared (bypasses PgBouncer prepared statement error)
-        $tables = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
-        $dropped = [];
-        foreach ($tables as $table) {
-            $name = $table->table_name;
-            DB::unprepared('DROP TABLE IF EXISTS "public"."' . $name . '" CASCADE');
-            $dropped[] = $name;
-        }
-
-        // Reset public schema as fallback
-        try {
-            DB::statement('DROP SCHEMA public CASCADE');
-            DB::statement('CREATE SCHEMA public');
-        } catch (\Exception $e) {
-            // Ignore schema drop error if non-owner
-        }
-
         Artisan::call('migrate', ['--force' => true]);
-        $migrateOut = Artisan::output();
-
-        Artisan::call('db:seed', ['--force' => true]);
-        $seedOut = Artisan::output();
-
-        return '<h2 style="color:green;font-family:sans-serif;">✅ PostgreSQL Database Wiped, Migrated & Seeded Successfully!</h2>' .
-            '<p><b>Dropped Tables:</b> ' . htmlspecialchars(implode(', ', $dropped)) . '</p>' .
-            '<pre style="background:#222;color:#0f0;padding:15px;border-radius:5px;">' . htmlspecialchars($migrateOut . "\n" . $seedOut) . '</pre><br><a href="/" style="font-size:18px;font-family:sans-serif;">Go to App Home / Login</a>';
+        $out .= "Migrate:\n" . Artisan::output() . "\n";
     } catch (\Exception $e) {
-        return '<h2 style="color:red;font-family:sans-serif;">❌ Migration Failed</h2><pre style="background:#fee;color:#900;padding:15px;border-radius:5px;">' . htmlspecialchars($e->getMessage()) . "\n\n" . htmlspecialchars($e->getTraceAsString()) . '</pre>';
+        $out .= "Migrate Info: " . $e->getMessage() . "\n";
+    }
+
+    try {
+        Artisan::call('db:seed', ['--force' => true]);
+        $out .= "Seed:\n" . Artisan::output() . "\n";
+        return '<h2 style="color:green;font-family:sans-serif;">✅ Database Seeded Successfully!</h2><pre style="background:#222;color:#0f0;padding:15px;border-radius:5px;">' . htmlspecialchars($out) . '</pre><br><a href="/" style="font-size:18px;font-family:sans-serif;">Go to App Home / Login</a>';
+    } catch (\Exception $e) {
+        return '<h2 style="color:red;font-family:sans-serif;">❌ Seeding Error</h2><pre style="background:#fee;color:#900;padding:15px;border-radius:5px;">' . htmlspecialchars($out . "\nError: " . $e->getMessage()) . '</pre>';
     }
 });
