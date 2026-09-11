@@ -174,13 +174,21 @@ Route::group(['namespace' => 'MyParent','middleware' => 'my_parent',], function(
 /************************ DATABASE MIGRATION ROUTE ****************************/
 Route::get('/migrate-db', function () {
     try {
-        // Drop all existing tables in public schema with CASCADE
+        // Drop all existing tables in public schema with explicit schema prefix
         $tables = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
         $dropped = [];
         foreach ($tables as $table) {
             $name = $table->table_name;
-            DB::statement('DROP TABLE IF EXISTS "' . $name . '" CASCADE');
+            DB::statement('DROP TABLE IF EXISTS "public"."' . $name . '" CASCADE');
             $dropped[] = $name;
+        }
+
+        // Reset public schema as fallback
+        try {
+            DB::statement('DROP SCHEMA public CASCADE');
+            DB::statement('CREATE SCHEMA public');
+        } catch (\Exception $e) {
+            // Ignore schema drop error if non-owner
         }
 
         Artisan::call('migrate', ['--force' => true]);
