@@ -50,36 +50,50 @@ $_ENV['APP_EVENTS_CACHE'] = '/tmp/bootstrap/cache/events.php';
 
 define('LARAVEL_START', microtime(true));
 
+require __DIR__ . '/../vendor/autoload.php';
+
 // ===================================================================
 // RUNTIME PATCH: Carbon's Creator trait for PHP 8.2 compatibility.
 // In PHP 8.2, DateTime::getLastErrors() returns false (not array) when
 // there are no errors. Old Carbon versions call setLastErrors(array) with
-// false, causing TypeError. We intercept the trait autoload and serve
-// a patched version from /tmp.
+// false, causing TypeError.
+// We pre-load the patched Creator trait directly AFTER vendor/autoload.php
+// so it is in memory before Carbon::now() or any Carbon class is used.
 // ===================================================================
-spl_autoload_register(function ($class) {
-    if ($class === 'Carbon\\Traits\\Creator') {
-        $patchedFile = '/tmp/carbon_creator_patched.php';
-        if (!file_exists($patchedFile)) {
-            $originalFile = __DIR__ . '/../vendor/nesbot/carbon/src/Carbon/Traits/Creator.php';
-            if (file_exists($originalFile)) {
-                $content = file_get_contents($originalFile);
-                $content = str_replace(
-                    'static::setLastErrors(parent::getLastErrors());',
-                    'static::setLastErrors(parent::getLastErrors() ?: []);',
-                    $content
-                );
-                file_put_contents($patchedFile, $content);
-            }
-        }
-        if (file_exists($patchedFile)) {
-            require_once $patchedFile;
-            return true;
-        }
+$carbonCreatorPath = __DIR__ . '/../vendor/nesbot/carbon/src/Carbon/Traits/Creator.php';
+if (file_exists($carbonCreatorPath) && !trait_exists('Carbon\\Traits\\Creator', false)) {
+    $patchedCreatorFile = '/tmp/carbon_creator_patched.php';
+    if (!file_exists($patchedCreatorFile)) {
+        $content = file_get_contents($carbonCreatorPath);
+        // Fix setLastErrors method signature to drop strict array typehint
+        $content = str_replace(
+            'public static function setLastErrors(array $lastErrors)',
+            'public static function setLastErrors($lastErrors)',
+            $content
+        );
+        // Ensure static::$lastErrors is always an array
+        $content = str_replace(
+            'static::$lastErrors = $lastErrors;',
+            'static::$lastErrors = is_array($lastErrors) ? $lastErrors : [];',
+            $content
+        );
+        // Safely wrap parent::getLastErrors() calls
+        $content = str_replace(
+            'static::setLastErrors(parent::getLastErrors());',
+            'static::setLastErrors(parent::getLastErrors() ?: []);',
+            $content
+        );
+        $content = str_replace(
+            'static::setLastErrors(parent::getLastErrors())',
+            'static::setLastErrors(parent::getLastErrors() ?: [])',
+            $content
+        );
+        file_put_contents($patchedCreatorFile, $content);
     }
-}, true, true); // throw=true, prepend=true
-
-require __DIR__ . '/../vendor/autoload.php';
+    if (file_exists($patchedCreatorFile)) {
+        require_once $patchedCreatorFile;
+    }
+}
 
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
