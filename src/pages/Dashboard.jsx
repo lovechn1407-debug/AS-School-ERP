@@ -381,21 +381,24 @@ export default function Dashboard() {
   }
 
   // Role 6: STUDENT DASHBOARD (STUNNING MODERN APP PROFILE CARD)
+  const studentName = (currentUser?.name || "Ethan Miller").replace(/\s*\([^)]*\)/g, '').trim();
+
   return (
     <div className="space-y-6">
       
-      {/* Centered Circular Profile Card (Clean Minimal - No Capsule Boxes) */}
+      {/* Centered Circular Profile Card */}
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden relative">
         {/* Top Cover Banner */}
         <div className="h-32 sm:h-36 bg-gradient-to-r from-indigo-600 via-brand-600 to-purple-600 relative overflow-hidden flex items-center justify-end p-4">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-black/20 pointer-events-none"></div>
-          {/* Subtle Session selector in top right (Rectangular rounded-lg, no capsule) */}
-          <div className="relative z-10 bg-black/20 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-1.5 flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-white/80" />
+          
+          {/* Perfectly Aligned Session Selector in Top Right */}
+          <div className="relative z-10 bg-black/25 backdrop-blur-md border border-white/25 rounded-lg px-3 py-1.5 flex items-center gap-2 shadow-sm">
+            <Calendar className="w-4 h-4 text-white/90 shrink-0" />
             <select 
               value={selectedSession}
               onChange={e => setSelectedSession(e.target.value)}
-              className="bg-transparent font-semibold text-white text-xs focus:outline-none cursor-pointer"
+              className="bg-transparent font-bold text-white text-xs sm:text-sm focus:outline-none cursor-pointer pr-1"
             >
               <option value="2026-2027" className="text-slate-900">2026-2027 Session</option>
               <option value="2025-2026" className="text-slate-900">2025-2026 Session</option>
@@ -409,29 +412,29 @@ export default function Dashboard() {
           <div className="relative inline-block -mt-16 sm:-mt-20 z-10">
             <img 
               src={currentUser?.avatar || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=250"} 
-              alt={currentUser?.name || "Ethan Miller"} 
+              alt={studentName} 
               className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-xl object-cover bg-white mx-auto"
             />
-            <span className="absolute bottom-1 right-2 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" title="Active Student"></span>
+            <span className="absolute bottom-1 right-2 w-4.5 h-4.5 bg-emerald-500 border-2 border-white rounded-full" title="Active Student"></span>
           </div>
 
-          {/* Student Name */}
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-3">
-            {currentUser?.name || "Ethan Miller"}
+          {/* Clean Student Name (No Role / Account Type Suffix) */}
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-3">
+            {studentName}
           </h1>
 
-          {/* Clean Aligned Class & Admission Number (No capsule boxes!) */}
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm text-slate-600 font-medium">
-            <div className="flex items-center gap-1.5">
-              <GraduationCap className="w-4 h-4 text-brand-600 shrink-0" />
-              <span>Class: <strong className="text-slate-900 font-semibold">{currentUser?.class || 'Grade 10'} ({currentUser?.section || 'Section A'})</strong></span>
+          {/* Prominent & Perfectly Aligned Class & Admission Number */}
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm sm:text-base text-slate-600 font-medium">
+            <div className="flex items-center gap-2">
+              <GraduationCap className="w-5 h-5 text-brand-600 shrink-0" />
+              <span>Class: <strong className="text-slate-900 font-bold text-base sm:text-lg">{currentUser?.class || 'Grade 10'} ({currentUser?.section || 'Section A'})</strong></span>
             </div>
 
-            <span className="text-slate-300 font-bold">&bull;</span>
+            <span className="text-slate-300 font-bold hidden sm:inline">&bull;</span>
 
-            <div className="flex items-center gap-1.5">
-              <Hash className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span>Admission No: <strong className="font-mono text-slate-900 font-semibold">{currentUser?.admissionNo || 'STU-2026-0042'}</strong></span>
+            <div className="flex items-center gap-2">
+              <Hash className="w-4 h-4 text-slate-400 shrink-0" />
+              <span>Admission No: <strong className="font-mono text-slate-900 font-bold text-base sm:text-lg tracking-wide">{currentUser?.admissionNo || 'STU-2026-0042'}</strong></span>
             </div>
           </div>
 

@@ -13,7 +13,7 @@ export const INITIAL_SYSTEM_SETTINGS = {
 export const MOCK_USERS = [
   {
     id: "user-super-admin",
-    name: "Alex Vance (Super Admin)",
+    name: "Alex Vance",
     email: "superadmin@cjinspired.edu",
     role: "super_admin",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
@@ -22,7 +22,7 @@ export const MOCK_USERS = [
   },
   {
     id: "user-admin",
-    name: "Sarah Jenkins (Admin)",
+    name: "Sarah Jenkins",
     email: "admin@cjinspired.edu",
     role: "admin",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250",
@@ -31,7 +31,7 @@ export const MOCK_USERS = [
   },
   {
     id: "user-teacher",
-    name: "Dr. Robert Carter (Teacher)",
+    name: "Dr. Robert Carter",
     email: "teacher@cjinspired.edu",
     role: "teacher",
     avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=250",
@@ -40,7 +40,7 @@ export const MOCK_USERS = [
   },
   {
     id: "user-accountant",
-    name: "Elena Rostova (Accountant)",
+    name: "Elena Rostova",
     email: "accountant@cjinspired.edu",
     role: "accountant",
     avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=250",
@@ -49,7 +49,7 @@ export const MOCK_USERS = [
   },
   {
     id: "user-parent",
-    name: "David & Emma Miller (Parent)",
+    name: "David & Emma Miller",
     email: "parent@cjinspired.edu",
     role: "parent",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=250",
@@ -58,7 +58,7 @@ export const MOCK_USERS = [
   },
   {
     id: "user-student",
-    name: "Ethan Miller (Student)",
+    name: "Ethan Miller",
     email: "student@cjinspired.edu",
     role: "student",
     avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=250",
