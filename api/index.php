@@ -50,6 +50,35 @@ $_ENV['APP_EVENTS_CACHE'] = '/tmp/bootstrap/cache/events.php';
 
 define('LARAVEL_START', microtime(true));
 
+// ===================================================================
+// RUNTIME PATCH: Carbon's Creator trait for PHP 8.2 compatibility.
+// In PHP 8.2, DateTime::getLastErrors() returns false (not array) when
+// there are no errors. Old Carbon versions call setLastErrors(array) with
+// false, causing TypeError. We intercept the trait autoload and serve
+// a patched version from /tmp.
+// ===================================================================
+spl_autoload_register(function ($class) {
+    if ($class === 'Carbon\\Traits\\Creator') {
+        $patchedFile = '/tmp/carbon_creator_patched.php';
+        if (!file_exists($patchedFile)) {
+            $originalFile = __DIR__ . '/../vendor/nesbot/carbon/src/Carbon/Traits/Creator.php';
+            if (file_exists($originalFile)) {
+                $content = file_get_contents($originalFile);
+                $content = str_replace(
+                    'static::setLastErrors(parent::getLastErrors());',
+                    'static::setLastErrors(parent::getLastErrors() ?: []);',
+                    $content
+                );
+                file_put_contents($patchedFile, $content);
+            }
+        }
+        if (file_exists($patchedFile)) {
+            require_once $patchedFile;
+            return true;
+        }
+    }
+}, true, true); // throw=true, prepend=true
+
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = require_once __DIR__ . '/../bootstrap/app.php';
