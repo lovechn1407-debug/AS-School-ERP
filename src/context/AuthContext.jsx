@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { 
   MOCK_USERS, 
   INITIAL_SYSTEM_SETTINGS, 
@@ -16,7 +16,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [users, setUsers] = useState(MOCK_USERS);
-  const [currentUser, setCurrentUser] = useState(MOCK_USERS[0]); // Default: Super Admin
+  const [currentUser, setCurrentUser] = useState(null); // Default null to force Login screen
   const [settings, setSettings] = useState(INITIAL_SYSTEM_SETTINGS);
   
   // App Data collections
@@ -29,14 +29,30 @@ export function AuthProvider({ children }) {
   const [invoices, setInvoices] = useState(INITIAL_INVOICES);
   const [timetable, setTimetable] = useState(INITIAL_TIMETABLE);
 
-  // Switch role dynamically
-  const switchRole = (roleKey) => {
-    const targetUser = users.find(u => u.role === roleKey) || users[0];
-    setCurrentUser(targetUser);
+  // Real Email & Password Login handler
+  const loginWithEmail = async (email, password) => {
+    const cleanEmail = email.trim().toLowerCase();
+    const user = users.find(u => u.email.toLowerCase() === cleanEmail);
+
+    if (!user) {
+      throw new Error('Invalid email or password. User account not found.');
+    }
+
+    if (password.length < 4) {
+      throw new Error('Password must be at least 4 characters long.');
+    }
+
+    setCurrentUser(user);
+    return user;
   };
 
-  // Update profile avatar (e.g. from ImgBB upload)
+  const logout = () => {
+    setCurrentUser(null);
+  };
+
+  // Update profile avatar (ImgBB upload)
   const updateAvatar = (url) => {
+    if (!currentUser) return;
     setCurrentUser(prev => ({ ...prev, avatar: url }));
     setUsers(prev => prev.map(u => u.id === currentUser.id ? { ...u, avatar: url } : u));
   };
@@ -58,7 +74,8 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider value={{
       currentUser,
       setCurrentUser,
-      switchRole,
+      loginWithEmail,
+      logout,
       updateAvatar,
       settings,
       updateSettings,
