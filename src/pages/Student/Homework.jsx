@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { 
   BookOpenCheck, 
   Calendar, 
@@ -9,13 +10,19 @@ import {
   Download,
   Upload,
   Search,
-  Filter
+  Filter,
+  Plus,
+  Send,
+  Award
 } from 'lucide-react';
 
 export default function Homework() {
+  const { currentUser } = useAuth();
+  const isStaff = currentUser?.role !== 'student' && currentUser?.role !== 'parent';
   const [selectedSubject, setSelectedSubject] = useState('All');
+  const [showAssignModal, setShowAssignModal] = useState(false);
 
-  const homeworkList = [
+  const [homeworkList, setHomeworkList] = useState([
     {
       id: "HW-2026-101",
       subject: "Advanced Mathematics",
@@ -51,7 +58,35 @@ export default function Homework() {
       description: "Draw complete arrow-pushing mechanisms for nucleophilic substitution reactions.",
       attachment: "Chem_Reaction_Notes.pdf"
     }
-  ];
+  ]);
+
+  const [formData, setFormData] = useState({
+    title: '',
+    subject: 'Advanced Mathematics',
+    dueDate: '',
+    description: ''
+  });
+
+  const handleAssignHomework = (e) => {
+    e.preventDefault();
+    if (!formData.title || !formData.dueDate || !formData.description) return;
+
+    const newHW = {
+      id: `HW-2026-${100 + homeworkList.length + 1}`,
+      subject: formData.subject,
+      title: formData.title,
+      teacher: currentUser?.name || "Teacher",
+      assignedDate: new Date().toISOString().split('T')[0],
+      dueDate: formData.dueDate,
+      status: "Pending",
+      description: formData.description,
+      attachment: "Assignment_Brief.pdf"
+    };
+
+    setHomeworkList([newHW, ...homeworkList]);
+    setShowAssignModal(false);
+    setFormData({ title: '', subject: 'Advanced Mathematics', dueDate: '', description: '' });
+  };
 
   const filteredList = selectedSubject === 'All' 
     ? homeworkList 
@@ -70,19 +105,30 @@ export default function Homework() {
           <p className="text-slate-500 text-xs mt-0.5">Review assigned coursework, download resources, and track submission deadlines.</p>
         </div>
 
-        {/* Filter Dropdown */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 flex items-center gap-2">
-          <Filter className="w-4 h-4 text-slate-400" />
-          <select 
-            value={selectedSubject}
-            onChange={e => setSelectedSubject(e.target.value)}
-            className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
-          >
-            <option value="All">All Subjects</option>
-            <option value="Advanced Mathematics">Advanced Mathematics</option>
-            <option value="Quantum Physics">Quantum Physics</option>
-            <option value="Organic Chemistry">Organic Chemistry</option>
-          </select>
+        {/* Controls: Filter & Create Homework Button */}
+        <div className="flex items-center gap-2">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 flex items-center gap-2">
+            <Filter className="w-4 h-4 text-slate-400" />
+            <select 
+              value={selectedSubject}
+              onChange={e => setSelectedSubject(e.target.value)}
+              className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
+            >
+              <option value="All">All Subjects</option>
+              <option value="Advanced Mathematics">Advanced Mathematics</option>
+              <option value="Quantum Physics">Quantum Physics</option>
+              <option value="Organic Chemistry">Organic Chemistry</option>
+            </select>
+          </div>
+
+          {isStaff && (
+            <button
+              onClick={() => setShowAssignModal(true)}
+              className="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-xs"
+            >
+              <Plus className="w-4 h-4" /> Create Homework
+            </button>
+          )}
         </div>
       </div>
 
@@ -133,9 +179,14 @@ export default function Homework() {
                 <button className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-lg transition-all inline-flex items-center gap-1.5">
                   <Download className="w-3.5 h-3.5 text-slate-500" /> Attachment ({hw.attachment})
                 </button>
-                {hw.status === 'Pending' && (
+                {!isStaff && hw.status === 'Pending' && (
                   <button className="bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-1.5 rounded-lg transition-all inline-flex items-center gap-1.5 shadow-xs">
                     <Upload className="w-3.5 h-3.5" /> Submit Work
+                  </button>
+                )}
+                {isStaff && (
+                  <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-1.5 rounded-lg transition-all inline-flex items-center gap-1.5 shadow-xs">
+                    <Award className="w-3.5 h-3.5" /> Grade Submissions
                   </button>
                 )}
               </div>
@@ -144,6 +195,86 @@ export default function Homework() {
           </div>
         ))}
       </div>
+
+      {/* Assign Homework Modal */}
+      {showAssignModal && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-extrabold text-slate-900">Create New Homework Assignment</h3>
+              <button onClick={() => setShowAssignModal(false)} className="text-slate-400 hover:text-slate-600 text-xs font-bold">
+                Close
+              </button>
+            </div>
+
+            <form onSubmit={handleAssignHomework} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Subject</label>
+                <select
+                  value={formData.subject}
+                  onChange={e => setFormData({ ...formData, subject: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 font-bold focus:outline-none focus:border-brand-600"
+                >
+                  <option value="Advanced Mathematics">Advanced Mathematics</option>
+                  <option value="Quantum Physics">Quantum Physics</option>
+                  <option value="Organic Chemistry">Organic Chemistry</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Assignment Title</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Calculus Problem Set #5"
+                  value={formData.title}
+                  onChange={e => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 font-medium focus:outline-none focus:border-brand-600"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Due Date</label>
+                <input
+                  type="date"
+                  required
+                  value={formData.dueDate}
+                  onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 font-medium focus:outline-none focus:border-brand-600"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Instructions / Description</label>
+                <textarea
+                  required
+                  rows={3}
+                  placeholder="Provide instructions for students..."
+                  value={formData.description}
+                  onChange={e => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 font-medium focus:outline-none focus:border-brand-600"
+                ></textarea>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAssignModal(false)}
+                  className="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 font-bold hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-brand-600 text-white rounded-lg font-bold hover:bg-brand-700 flex items-center gap-1.5"
+                >
+                  <Send className="w-3.5 h-3.5" /> Publish Homework
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

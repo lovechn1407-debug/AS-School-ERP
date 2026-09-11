@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { 
   CalendarCheck, 
   Clock, 
@@ -9,29 +10,34 @@ import {
   Plus, 
   Send,
   Calendar,
-  UserCheck
+  UserCheck,
+  Check,
+  X
 } from 'lucide-react';
 
 export default function Attendance({ defaultTab = 'periodwise' }) {
+  const { currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState(defaultTab);
+  const isStaff = currentUser?.role !== 'student' && currentUser?.role !== 'parent';
 
   useEffect(() => {
     setActiveTab(defaultTab);
   }, [defaultTab]);
 
   // Sample periodwise attendance data
-  const periodAttendance = [
-    { period: "Period 1 (08:30 - 09:30 AM)", subject: "Advanced Mathematics", teacher: "Dr. Robert Carter", status: "Present", time: "08:31 AM" },
-    { period: "Period 2 (09:30 - 10:30 AM)", subject: "Quantum Physics", teacher: "Helen Troy", status: "Present", time: "09:30 AM" },
-    { period: "Period 3 (10:45 - 11:45 AM)", subject: "Organic Chemistry", teacher: "Prof. Clara Oswald", status: "Present", time: "10:46 AM" },
-    { period: "Period 4 (11:45 - 12:45 PM)", subject: "English Literature", teacher: "Marcus Sterling", status: "Present", time: "11:45 AM" },
-    { period: "Period 5 (01:30 - 02:30 PM)", subject: "Computer Science", teacher: "Alex Vance", status: "Present", time: "01:32 PM" }
-  ];
+  const [periodAttendance, setPeriodAttendance] = useState([
+    { id: 1, period: "Period 1 (08:30 - 09:30 AM)", subject: "Advanced Mathematics", teacher: "Dr. Robert Carter", status: "Present", time: "08:31 AM" },
+    { id: 2, period: "Period 2 (09:30 - 10:30 AM)", subject: "Quantum Physics", teacher: "Helen Troy", status: "Present", time: "09:30 AM" },
+    { id: 3, period: "Period 3 (10:45 - 11:45 AM)", subject: "Organic Chemistry", teacher: "Prof. Clara Oswald", status: "Present", time: "10:46 AM" },
+    { id: 4, period: "Period 4 (11:45 - 12:45 PM)", subject: "English Literature", teacher: "Marcus Sterling", status: "Present", time: "11:45 AM" },
+    { id: 5, period: "Period 5 (01:30 - 02:30 PM)", subject: "Computer Science", teacher: "Alex Vance", status: "Present", time: "01:32 PM" }
+  ]);
 
   // Leave Applications state
   const [leaveRequests, setLeaveRequests] = useState([
-    { id: "LV-2026-001", reason: "Medical Appointment & Fever", startDate: "2026-09-02", endDate: "2026-09-03", days: 2, status: "Approved", appliedOn: "2026-09-01" },
-    { id: "LV-2026-002", reason: "Family Event / Sister Wedding", startDate: "2026-09-18", endDate: "2026-09-20", days: 3, status: "Pending", appliedOn: "2026-09-10" }
+    { id: "LV-2026-001", studentName: "Ethan Miller", reason: "Medical Appointment & Fever", startDate: "2026-09-02", endDate: "2026-09-03", days: 2, status: "Approved", appliedOn: "2026-09-01" },
+    { id: "LV-2026-002", studentName: "Ethan Miller", reason: "Family Event / Sister Wedding", startDate: "2026-09-18", endDate: "2026-09-20", days: 3, status: "Pending", appliedOn: "2026-09-10" },
+    { id: "LV-2026-003", studentName: "Sophia Martinez", reason: "Dental Surgery Clearance", startDate: "2026-09-12", endDate: "2026-09-13", days: 1, status: "Pending", appliedOn: "2026-09-11" }
   ]);
 
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -48,6 +54,7 @@ export default function Attendance({ defaultTab = 'periodwise' }) {
 
     const newLeave = {
       id: `LV-2026-00${leaveRequests.length + 1}`,
+      studentName: currentUser?.name || "Ethan Miller",
       reason: formData.reason,
       startDate: formData.startDate,
       endDate: formData.endDate,
@@ -59,6 +66,20 @@ export default function Attendance({ defaultTab = 'periodwise' }) {
     setLeaveRequests([newLeave, ...leaveRequests]);
     setShowApplyModal(false);
     setFormData({ reason: '', startDate: '', endDate: '', leaveType: 'Casual Leave' });
+  };
+
+  const handleLeaveStatusChange = (id, newStatus) => {
+    setLeaveRequests(leaveRequests.map(req => req.id === id ? { ...req, status: newStatus } : req));
+  };
+
+  const togglePeriodStatus = (id) => {
+    setPeriodAttendance(periodAttendance.map(p => {
+      if (p.id === id) {
+        const nextStatus = p.status === 'Present' ? 'Absent' : p.status === 'Absent' ? 'Late' : 'Present';
+        return { ...p, status: nextStatus };
+      }
+      return p;
+    }));
   };
 
   return (
@@ -204,9 +225,27 @@ export default function Attendance({ defaultTab = 'periodwise' }) {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-                  <span>Applied on: {req.appliedOn}</span>
-                  <span className="font-semibold text-brand-600">Pending Principal Clearance</span>
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400 font-medium">Student: <strong className="text-slate-700">{req.studentName}</strong> (Applied: {req.appliedOn})</span>
+                  
+                  {isStaff && req.status === 'Pending' ? (
+                    <div className="flex items-center gap-1.5">
+                      <button 
+                        onClick={() => handleLeaveStatusChange(req.id, 'Approved')}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-md font-bold text-[10px] flex items-center gap-1 transition-all"
+                      >
+                        <Check className="w-3 h-3" /> Approve
+                      </button>
+                      <button 
+                        onClick={() => handleLeaveStatusChange(req.id, 'Rejected')}
+                        className="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1 rounded-md font-bold text-[10px] flex items-center gap-1 transition-all"
+                      >
+                        <X className="w-3 h-3" /> Reject
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="font-semibold text-brand-600">{req.status} Status</span>
+                  )}
                 </div>
               </div>
             ))}

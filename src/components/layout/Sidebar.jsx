@@ -51,6 +51,20 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
           { id: 'dorms', label: 'Hostel Dormitories', icon: Home },
           { id: 'admissions', label: 'Student Admissions', icon: UserPlus },
           { id: 'promotions', label: 'Student Promotions', icon: FolderTree },
+          { 
+            id: 'attendance', 
+            label: 'Daily Attendance', 
+            icon: CalendarCheck,
+            children: [
+              { id: 'attendance-periodwise', label: 'Attendance Management', icon: Clock },
+              { id: 'attendance-leave', label: 'Leave Approvals', icon: FileText }
+            ]
+          },
+          { id: 'homework', label: 'Homework Assignments', icon: BookOpenCheck },
+          { id: 'circular', label: 'School Circulars', icon: Megaphone },
+          { id: 'photo-gallery', label: 'Photo Gallery', icon: ImageIcon },
+          { id: 'communication', label: 'Communication Portal', icon: MessageSquare },
+          { id: 'news-events', label: 'News & Events', icon: Newspaper },
           { id: 'marks', label: 'Exams & Evaluation', icon: FileSpreadsheet },
           { id: 'tabulation', label: 'Tabulation Sheet', icon: Award },
           { id: 'invoices', label: 'Fee Invoices', icon: CreditCard },
@@ -66,12 +80,39 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
           { id: 'dorms', label: 'Hostel Dormitories', icon: Home },
           { id: 'admissions', label: 'Student Admissions', icon: UserPlus },
           { id: 'promotions', label: 'Student Promotions', icon: FolderTree },
+          { 
+            id: 'attendance', 
+            label: 'Daily Attendance', 
+            icon: CalendarCheck,
+            children: [
+              { id: 'attendance-periodwise', label: 'Attendance Management', icon: Clock },
+              { id: 'attendance-leave', label: 'Leave Approvals', icon: FileText }
+            ]
+          },
+          { id: 'homework', label: 'Homework Assignments', icon: BookOpenCheck },
+          { id: 'circular', label: 'School Circulars', icon: Megaphone },
+          { id: 'photo-gallery', label: 'Photo Gallery', icon: ImageIcon },
+          { id: 'communication', label: 'Communication Portal', icon: MessageSquare },
+          { id: 'news-events', label: 'News & Events', icon: Newspaper },
           { id: 'users', label: 'User Directory', icon: Users }
         ];
 
       case 'teacher':
         return [
           { id: 'dashboard', label: 'Teacher Dashboard', icon: LayoutDashboard },
+          { 
+            id: 'attendance', 
+            label: 'Daily Attendance', 
+            icon: CalendarCheck,
+            children: [
+              { id: 'attendance-periodwise', label: 'Mark Attendance', icon: Clock },
+              { id: 'attendance-leave', label: 'Student Leave Requests', icon: FileText }
+            ]
+          },
+          { id: 'homework', label: 'Homework & Grading', icon: BookOpenCheck },
+          { id: 'circular', label: 'School Circulars', icon: Megaphone },
+          { id: 'communication', label: 'Student & Parent Chat', icon: MessageSquare },
+          { id: 'news-events', label: 'Campus News & Events', icon: Newspaper },
           { id: 'marks', label: 'Marks Entry Matrix', icon: FileSpreadsheet },
           { id: 'tabulation', label: 'Class Tabulation', icon: Award },
           { id: 'timetable', label: 'Teaching Schedule', icon: Clock }

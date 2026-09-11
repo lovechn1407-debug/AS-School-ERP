@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { 
   Image as ImageIcon, 
   Calendar, 
@@ -6,14 +7,20 @@ import {
   Download, 
   Filter, 
   Sparkles,
-  X
+  X,
+  Plus,
+  Send,
+  Trash2
 } from 'lucide-react';
 
 export default function PhotoGallery() {
+  const { currentUser } = useAuth();
+  const isStaff = currentUser?.role !== 'student' && currentUser?.role !== 'parent';
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activePhoto, setActivePhoto] = useState(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
-  const galleryItems = [
+  const [galleryItems, setGalleryItems] = useState([
     {
       id: 1,
       title: "Annual Science Exhibition & Robotics Fair",
@@ -62,7 +69,37 @@ export default function PhotoGallery() {
       image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&q=80&w=800",
       description: "Passionate debates on global economic policies and technological ethics."
     }
-  ];
+  ]);
+
+  const [formData, setFormData] = useState({
+    title: '',
+    category: 'Academics',
+    image: '',
+    description: ''
+  });
+
+  const handleUploadPhoto = (e) => {
+    e.preventDefault();
+    if (!formData.title || !formData.image) return;
+
+    const newPhoto = {
+      id: Date.now(),
+      title: formData.title,
+      category: formData.category,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+      image: formData.image,
+      description: formData.description || "School event photograph."
+    };
+
+    setGalleryItems([newPhoto, ...galleryItems]);
+    setShowUploadModal(false);
+    setFormData({ title: '', category: 'Academics', image: '', description: '' });
+  };
+
+  const handleDeletePhoto = (e, id) => {
+    e.stopPropagation();
+    setGalleryItems(galleryItems.filter(p => p.id !== id));
+  };
 
   const filteredItems = selectedCategory === 'All'
     ? galleryItems
@@ -81,21 +118,32 @@ export default function PhotoGallery() {
           <p className="text-slate-500 text-xs mt-0.5">Explore high-resolution event photographs and school celebrations.</p>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-          {['All', 'Academics', 'Sports', 'Cultural', 'Campus Events'].map(cat => (
+        {/* Category Filters & Staff Upload Action */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+            {['All', 'Academics', 'Sports', 'Cultural', 'Campus Events'].map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  selectedCategory === cat
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {isStaff && (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                selectedCategory === cat
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
+              onClick={() => setShowUploadModal(true)}
+              className="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-xs"
             >
-              {cat}
+              <Plus className="w-4 h-4" /> Upload Photo
             </button>
-          ))}
+          )}
         </div>
       </div>
 
@@ -104,7 +152,7 @@ export default function PhotoGallery() {
         {filteredItems.map(photo => (
           <div 
             key={photo.id} 
-            className="group bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-md hover:border-slate-300 transition-all cursor-pointer"
+            className="group bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-md hover:border-slate-300 transition-all cursor-pointer relative"
             onClick={() => setActivePhoto(photo)}
           >
             <div className="h-48 relative overflow-hidden bg-slate-100">
@@ -121,6 +169,15 @@ export default function PhotoGallery() {
               <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-slate-900 text-[10px] font-bold px-2.5 py-0.5 rounded-md shadow-xs">
                 {photo.category}
               </span>
+              {isStaff && (
+                <button
+                  onClick={(e) => handleDeletePhoto(e, photo.id)}
+                  className="absolute top-3 left-3 bg-rose-600/90 hover:bg-rose-700 text-white p-1.5 rounded-lg backdrop-blur-xs transition-all shadow-xs"
+                  title="Delete Photo"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
 
             <div className="p-4 space-y-2">
@@ -159,6 +216,88 @@ export default function PhotoGallery() {
               <h2 className="text-lg font-black text-slate-900">{activePhoto.title}</h2>
               <p className="text-xs text-slate-600 font-medium">{activePhoto.description}</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Photo Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-extrabold text-slate-900">Upload Campus Event Photo</h3>
+              <button onClick={() => setShowUploadModal(false)} className="text-slate-400 hover:text-slate-600 text-xs font-bold">
+                Close
+              </button>
+            </div>
+
+            <form onSubmit={handleUploadPhoto} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Event / Photo Title</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Annual Sports Athletics Finals"
+                  value={formData.title}
+                  onChange={e => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 font-medium focus:outline-none focus:border-brand-600"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Album Category</label>
+                <select
+                  value={formData.category}
+                  onChange={e => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 font-bold focus:outline-none focus:border-brand-600"
+                >
+                  <option value="Academics">Academics</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Cultural">Cultural</option>
+                  <option value="Campus Events">Campus Events</option>
+                  <option value="Social Service">Social Service</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Image Direct URL</label>
+                <input
+                  type="url"
+                  required
+                  placeholder="https://images.unsplash.com/photo-..."
+                  value={formData.image}
+                  onChange={e => setFormData({ ...formData, image: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 font-medium focus:outline-none focus:border-brand-600"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Description</label>
+                <textarea
+                  rows={2}
+                  placeholder="Describe the photograph event..."
+                  value={formData.description}
+                  onChange={e => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 font-medium focus:outline-none focus:border-brand-600"
+                ></textarea>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowUploadModal(false)}
+                  className="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 font-bold hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-brand-600 text-white rounded-lg font-bold hover:bg-brand-700 flex items-center gap-1.5"
+                >
+                  <Send className="w-3.5 h-3.5" /> Publish to Gallery
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
