@@ -174,12 +174,12 @@ Route::group(['namespace' => 'MyParent','middleware' => 'my_parent',], function(
 /************************ DATABASE MIGRATION ROUTE ****************************/
 Route::get('/migrate-db', function () {
     try {
-        // Drop all existing tables in public schema with explicit schema prefix
+        // Drop all existing tables in public schema using DB::unprepared (bypasses PgBouncer prepared statement error)
         $tables = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
         $dropped = [];
         foreach ($tables as $table) {
             $name = $table->table_name;
-            DB::statement('DROP TABLE IF EXISTS "public"."' . $name . '" CASCADE');
+            DB::unprepared('DROP TABLE IF EXISTS "public"."' . $name . '" CASCADE');
             $dropped[] = $name;
         }
 
