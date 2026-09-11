@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Illuminate\Support\Facades\URL;
 
-class AppServiceProvider extends ServiceProvider
+class AppServiceProvider extends BaseServiceProvider
 {
     /**
      * Bootstrap any application services.
