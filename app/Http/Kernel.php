@@ -7,6 +7,22 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 class Kernel extends HttpKernel
 {
     /**
+     * The bootstrap classes for the application.
+     *
+     * Override to use our custom HandleExceptions that suppresses
+     * PHP 8.1+ deprecation notices for Laravel 8.42 compatibility.
+     *
+     * @var string[]
+     */
+    protected $bootstrappers = [
+        \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
+        \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
+        \App\Bootstrap\HandleExceptions::class,
+        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
+        \Illuminate\Foundation\Bootstrap\RegisterProviders::class,
+        \Illuminate\Foundation\Bootstrap\BootProviders::class,
+    ];
+    /**
      * The application's global HTTP middleware stack.
      *
      * These middleware are run during every request to your application.
