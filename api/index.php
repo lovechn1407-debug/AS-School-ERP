@@ -95,32 +95,6 @@ if (file_exists($carbonCreatorPath) && !trait_exists('Carbon\\Traits\\Creator', 
     }
 }
 
-// RUNTIME PATCH: Carbon's Units trait for PHP 8.0+ operand compatibility.
-// In PHP 8.0+, passing non-numeric strings (like '') to date arithmetic methods
-// throws "TypeError: Unsupported operand types: string * int".
-// We pre-load the patched Units trait to cast operands safely.
-$carbonUnitsPath = __DIR__ . '/../vendor/nesbot/carbon/src/Carbon/Traits/Units.php';
-if (file_exists($carbonUnitsPath) && !trait_exists('Carbon\\Traits\\Units', false)) {
-    $patchedUnitsFile = '/tmp/carbon_units_patched.php';
-    if (!file_exists($patchedUnitsFile)) {
-        $content = file_get_contents($carbonUnitsPath);
-        $content = str_replace(
-            '$value *',
-            '((float) ($value ?? 0)) *',
-            $content
-        );
-        $content = str_replace(
-            '$count *',
-            '((float) ($count ?? 0)) *',
-            $content
-        );
-        file_put_contents($patchedUnitsFile, $content);
-    }
-    if (file_exists($patchedUnitsFile)) {
-        require_once $patchedUnitsFile;
-    }
-}
-
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
 // Bind storage path to writable /tmp directory on serverless runtimes
@@ -145,12 +119,20 @@ set_error_handler(function ($level, $message, $file = '', $line = 0) {
     return true;
 });
 
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+try {
+    $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
-$response = $kernel->handle(
-    $request = Illuminate\Http\Request::capture()
-);
+    $response = $kernel->handle(
+        $request = Illuminate\Http\Request::capture()
+    );
 
-$response->send();
+    $response->send();
 
-$kernel->terminate($request, $response);
+    $kernel->terminate($request, $response);
+} catch (\Throwable $e) {
+    http_response_code(500);
+    echo "<h1>Runtime Exception</h1>";
+    echo "<h3>" . get_class($e) . ": " . htmlspecialchars($e->getMessage()) . "</h3>";
+    echo "<p>in <b>" . htmlspecialchars($e->getFile()) . "</b> on line <b>" . $e->getLine() . "</b></p>";
+    echo "<pre style='background:#f4f4f4;padding:15px;border-radius:5px;'>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+}
