@@ -174,8 +174,14 @@ Route::group(['namespace' => 'MyParent','middleware' => 'my_parent',], function(
 /************************ DATABASE MIGRATION ROUTE ****************************/
 Route::get('/migrate-db', function () {
     try {
-        DB::statement('DROP SCHEMA public CASCADE');
-        DB::statement('CREATE SCHEMA public');
+        // Drop all existing tables in public schema with CASCADE
+        $tables = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
+        $dropped = [];
+        foreach ($tables as $table) {
+            $name = $table->table_name;
+            DB::statement('DROP TABLE IF EXISTS "' . $name . '" CASCADE');
+            $dropped[] = $name;
+        }
 
         Artisan::call('migrate', ['--force' => true]);
         $migrateOut = Artisan::output();
@@ -183,7 +189,9 @@ Route::get('/migrate-db', function () {
         Artisan::call('db:seed', ['--force' => true]);
         $seedOut = Artisan::output();
 
-        return '<h2 style="color:green;font-family:sans-serif;">✅ PostgreSQL Schema Recreated, Migrated & Seeded Successfully!</h2><pre style="background:#222;color:#0f0;padding:15px;border-radius:5px;">' . htmlspecialchars($migrateOut . "\n" . $seedOut) . '</pre><br><a href="/" style="font-size:18px;font-family:sans-serif;">Go to App Home / Login</a>';
+        return '<h2 style="color:green;font-family:sans-serif;">✅ PostgreSQL Database Wiped, Migrated & Seeded Successfully!</h2>' .
+            '<p><b>Dropped Tables:</b> ' . htmlspecialchars(implode(', ', $dropped)) . '</p>' .
+            '<pre style="background:#222;color:#0f0;padding:15px;border-radius:5px;">' . htmlspecialchars($migrateOut . "\n" . $seedOut) . '</pre><br><a href="/" style="font-size:18px;font-family:sans-serif;">Go to App Home / Login</a>';
     } catch (\Exception $e) {
         return '<h2 style="color:red;font-family:sans-serif;">❌ Migration Failed</h2><pre style="background:#fee;color:#900;padding:15px;border-radius:5px;">' . htmlspecialchars($e->getMessage()) . "\n\n" . htmlspecialchars($e->getTraceAsString()) . '</pre>';
     }
