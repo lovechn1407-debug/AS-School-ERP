@@ -389,16 +389,16 @@ export default function Dashboard() {
       {/* Centered Circular Profile Card */}
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden relative">
         {/* Top Cover Banner */}
-        <div className="h-32 sm:h-36 bg-gradient-to-r from-indigo-600 via-brand-600 to-purple-600 relative overflow-hidden flex items-center justify-end p-4">
+        <div className="h-32 sm:h-36 bg-gradient-to-r from-indigo-600 via-brand-600 to-purple-600 relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-black/20 pointer-events-none"></div>
           
-          {/* Perfectly Aligned Session Selector in Top Right */}
-          <div className="relative z-10 bg-black/25 backdrop-blur-md border border-white/25 rounded-lg px-3 py-1.5 flex items-center gap-2 shadow-sm">
-            <Calendar className="w-4 h-4 text-white/90 shrink-0" />
+          {/* Academic Session Selector Pinned Strictly to Top-Right Corner */}
+          <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 bg-black/30 backdrop-blur-md border border-white/25 rounded-lg px-2.5 py-1.5 flex items-center gap-1.5 shadow-sm">
+            <Calendar className="w-3.5 h-3.5 text-white/90 shrink-0" />
             <select 
               value={selectedSession}
               onChange={e => setSelectedSession(e.target.value)}
-              className="bg-transparent font-bold text-white text-xs sm:text-sm focus:outline-none cursor-pointer pr-1"
+              className="bg-transparent font-bold text-white text-xs sm:text-sm focus:outline-none cursor-pointer"
             >
               <option value="2026-2027" className="text-slate-900">2026-2027 Session</option>
               <option value="2025-2026" className="text-slate-900">2025-2026 Session</option>
