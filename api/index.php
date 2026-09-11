@@ -1,7 +1,15 @@
 <?php
 
-// Suppress PHP 8+ deprecation warnings from legacy dependencies
+// Intercept and suppress PHP 8.1+ deprecation warnings globally
+set_error_handler(function ($level, $message, $file = '', $line = 0) {
+    if ($level === E_DEPRECATED || $level === E_USER_DEPRECATED) {
+        return true;
+    }
+    return false;
+});
+
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+ini_set('error_reporting', (string)(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED));
 
 // Ensure essential storage folders exist in serverless /tmp environment
 $storageDirs = [
@@ -30,6 +38,14 @@ $app = require_once __DIR__ . '/../bootstrap/app.php';
 if (method_exists($app, 'useStoragePath')) {
     $app->useStoragePath('/tmp/storage');
 }
+
+// Re-enforce deprecation suppression after Laravel bootstraps HandleExceptions
+set_error_handler(function ($level, $message, $file = '', $line = 0) {
+    if ($level === E_DEPRECATED || $level === E_USER_DEPRECATED) {
+        return true;
+    }
+    return false;
+});
 
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
