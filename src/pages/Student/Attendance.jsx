@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   CalendarCheck, 
   Clock, 
@@ -14,6 +14,10 @@ import {
 
 export default function Attendance({ defaultTab = 'periodwise' }) {
   const [activeTab, setActiveTab] = useState(defaultTab);
+
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
 
   // Sample periodwise attendance data
   const periodAttendance = [

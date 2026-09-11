@@ -30,10 +30,13 @@ import {
 
 export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIsMobileOpen }) {
   const { currentUser, logout } = useAuth();
-  const [openSubmenu, setOpenSubmenu] = useState('attendance');
+  const [openSubmenus, setOpenSubmenus] = useState({ attendance: true });
 
   const toggleSubmenu = (id) => {
-    setOpenSubmenu(prev => prev === id ? null : id);
+    setOpenSubmenus(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
   const getNavItems = () => {
@@ -165,17 +168,14 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
             {navItems.map(item => {
               const Icon = item.icon;
               const hasChildren = item.children && item.children.length > 0;
-              const isSubOpen = openSubmenu === item.id || activePage.startsWith(item.id);
-              const isParentActive = activePage === item.id || activePage.startsWith(item.id);
+              const isSubOpen = !!openSubmenus[item.id];
+              const isParentActive = activePage.startsWith(item.id);
 
               if (hasChildren) {
                 return (
                   <div key={item.id} className="space-y-1">
                     <button
-                      onClick={() => {
-                        toggleSubmenu(item.id);
-                        handleNavClick(item.children[0].id);
-                      }}
+                      onClick={() => toggleSubmenu(item.id)}
                       className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
                         isParentActive 
                           ? 'bg-brand-50 text-brand-700 font-bold border border-brand-200/60'
