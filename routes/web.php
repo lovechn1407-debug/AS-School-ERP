@@ -174,8 +174,16 @@ Route::group(['namespace' => 'MyParent','middleware' => 'my_parent',], function(
 /************************ DATABASE MIGRATION ROUTE ****************************/
 Route::get('/migrate-db', function () {
     try {
-        Artisan::call('migrate:fresh', ['--force' => true, '--seed' => true]);
-        return '<h2 style="color:green;font-family:sans-serif;">✅ Database Migration & Seeding Successful!</h2><pre style="background:#222;color:#0f0;padding:15px;border-radius:5px;">' . htmlspecialchars(Artisan::output()) . '</pre><br><a href="/" style="font-size:18px;font-family:sans-serif;">Go to App Home / Login</a>';
+        Artisan::call('db:wipe', ['--force' => true]);
+        $wipeOut = Artisan::output();
+
+        Artisan::call('migrate', ['--force' => true]);
+        $migrateOut = Artisan::output();
+
+        Artisan::call('db:seed', ['--force' => true]);
+        $seedOut = Artisan::output();
+
+        return '<h2 style="color:green;font-family:sans-serif;">✅ Database Fresh Migration & Seeding Successful!</h2><pre style="background:#222;color:#0f0;padding:15px;border-radius:5px;">' . htmlspecialchars($wipeOut . "\n" . $migrateOut . "\n" . $seedOut) . '</pre><br><a href="/" style="font-size:18px;font-family:sans-serif;">Go to App Home / Login</a>';
     } catch (\Exception $e) {
         return '<h2 style="color:red;font-family:sans-serif;">❌ Migration Failed</h2><pre style="background:#fee;color:#900;padding:15px;border-radius:5px;">' . htmlspecialchars($e->getMessage()) . "\n\n" . htmlspecialchars($e->getTraceAsString()) . '</pre>';
     }
