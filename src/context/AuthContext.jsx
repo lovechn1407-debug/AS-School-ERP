@@ -138,15 +138,6 @@ export function AuthProvider({ children }) {
     await set(ref(db, 'system_data/users'), updatedUsersList);
   };
 
-  const updateUserProfile = async (updatedFields) => {
-    if (!currentUser) return;
-    const updatedUser = { ...currentUser, ...updatedFields };
-    setCurrentUser(updatedUser);
-    const updatedUsersList = users.map(u => u.id === currentUser.id ? updatedUser : u);
-    setUsersState(updatedUsersList);
-    await set(ref(db, 'system_data/users'), updatedUsersList);
-  };
-
   const addUser = async (usr) => {
     const newUser = { ...usr, id: `usr-${Date.now()}` };
     const updatedUsers = [...users, newUser];
@@ -196,7 +187,6 @@ export function AuthProvider({ children }) {
       loginWithEmail,
       logout,
       updateAvatar,
-      updateUserProfile,
       settings,
       updateSettings,
       users,

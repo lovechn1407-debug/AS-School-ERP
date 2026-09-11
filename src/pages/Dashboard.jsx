@@ -21,10 +21,7 @@ import {
   User,
   Hash,
   Sparkles,
-  ChevronDown,
-  BookCheck,
-  Zap,
-  Check
+  ChevronDown
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -36,62 +33,53 @@ export default function Dashboard() {
     const totalRevenue = invoices.reduce((acc, inv) => acc + inv.paidAmount, 0);
     return (
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-6 lg:p-8 text-white shadow-xl relative overflow-hidden">
-          <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-brand-500/10 blur-3xl pointer-events-none"></div>
-          <div className="space-y-2 relative z-10">
-            <span className="bg-brand-500/20 text-brand-300 border border-brand-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+        <div className="bg-slate-900 rounded-2xl p-6 text-white shadow-md">
+          <div className="space-y-2">
+            <span className="bg-brand-500/20 text-brand-300 border border-brand-500/30 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" /> Super Admin Command Center
             </span>
-            <h1 className="text-2xl lg:text-3xl font-black tracking-tight">System Control & Operations</h1>
-            <p className="text-slate-300 text-xs lg:text-sm max-w-xl">
+            <h1 className="text-2xl font-extrabold tracking-tight">System Control & Operations</h1>
+            <p className="text-slate-300 text-xs max-w-xl">
               Global system monitoring, database audit logs, user management, and financial overview.
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-brand-200 transition-all">
+          <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs">
             <div className="flex justify-between items-center text-slate-400 text-xs font-bold uppercase">
               <span>Total System Users</span>
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                <Users className="w-5 h-5" />
-              </div>
+              <Users className="w-5 h-5 text-indigo-600" />
             </div>
-            <div className="text-2xl font-black text-slate-900 mt-3">{users.length}</div>
+            <div className="text-2xl font-black text-slate-900 mt-2">{users.length}</div>
             <span className="text-xs text-emerald-600 font-semibold mt-1 block">Active Across 6 Roles</span>
           </div>
 
-          <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-brand-200 transition-all">
+          <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs">
             <div className="flex justify-between items-center text-slate-400 text-xs font-bold uppercase">
               <span>System Revenue</span>
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <DollarSign className="w-5 h-5" />
-              </div>
+              <DollarSign className="w-5 h-5 text-emerald-600" />
             </div>
-            <div className="text-2xl font-black text-slate-900 mt-3">${totalRevenue.toLocaleString()}</div>
+            <div className="text-2xl font-black text-slate-900 mt-2">${totalRevenue.toLocaleString()}</div>
             <span className="text-xs text-slate-500 font-semibold mt-1 block">Verified Invoices</span>
           </div>
 
-          <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-brand-200 transition-all">
+          <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs">
             <div className="flex justify-between items-center text-slate-400 text-xs font-bold uppercase">
               <span>Active Classes</span>
-              <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                <Layers className="w-5 h-5" />
-              </div>
+              <Layers className="w-5 h-5 text-purple-600" />
             </div>
-            <div className="text-2xl font-black text-slate-900 mt-3">{classes.length}</div>
+            <div className="text-2xl font-black text-slate-900 mt-2">{classes.length}</div>
             <span className="text-xs text-slate-500 font-semibold mt-1 block">Grades 9 - 12</span>
           </div>
 
-          <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-brand-200 transition-all">
+          <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs">
             <div className="flex justify-between items-center text-slate-400 text-xs font-bold uppercase">
               <span>System Status</span>
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <Activity className="w-5 h-5 animate-pulse" />
-              </div>
+              <Activity className="w-5 h-5 text-emerald-600 animate-pulse" />
             </div>
-            <div className="text-2xl font-black text-emerald-600 mt-3">100% Live</div>
-            <span className="text-xs text-slate-500 font-semibold mt-1 block">Firebase Database Sync</span>
+            <div className="text-2xl font-black text-emerald-600 mt-2">100% Operational</div>
+            <span className="text-xs text-slate-500 font-semibold mt-1 block">Firebase Connected</span>
           </div>
         </div>
 
@@ -132,9 +120,9 @@ export default function Dashboard() {
   if (currentUser?.role === 'admin') {
     return (
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-purple-800 to-indigo-900 rounded-2xl p-6 lg:p-8 text-white shadow-xl">
+        <div className="bg-purple-900 rounded-2xl p-6 text-white shadow-md">
           <div className="space-y-2">
-            <span className="bg-white/20 text-purple-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+            <span className="bg-white/20 text-purple-100 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
               School Administration Portal
             </span>
             <h1 className="text-2xl font-extrabold tracking-tight">Academic & School Operations</h1>
@@ -190,9 +178,9 @@ export default function Dashboard() {
   if (currentUser?.role === 'teacher') {
     return (
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-cyan-800 to-blue-900 rounded-2xl p-6 lg:p-8 text-white shadow-xl">
+        <div className="bg-cyan-900 rounded-2xl p-6 text-white shadow-md">
           <div className="space-y-2">
-            <span className="bg-white/20 text-cyan-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+            <span className="bg-white/20 text-cyan-100 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
               Educator Dashboard
             </span>
             <h1 className="text-2xl font-extrabold tracking-tight">Academic Evaluation & Marks</h1>
@@ -268,9 +256,9 @@ export default function Dashboard() {
 
     return (
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-2xl p-6 lg:p-8 text-white shadow-xl">
+        <div className="bg-emerald-900 rounded-2xl p-6 text-white shadow-md">
           <div className="space-y-2">
-            <span className="bg-white/20 text-emerald-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+            <span className="bg-white/20 text-emerald-100 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
               Financial Management Portal
             </span>
             <h1 className="text-2xl font-extrabold tracking-tight">Student Accounts & Fee Billing</h1>
@@ -343,9 +331,9 @@ export default function Dashboard() {
   if (currentUser?.role === 'parent') {
     return (
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-amber-700 to-orange-800 rounded-2xl p-6 lg:p-8 text-white shadow-xl">
+        <div className="bg-amber-900 rounded-2xl p-6 text-white shadow-md">
           <div className="space-y-2">
-            <span className="bg-white/20 text-amber-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
+            <span className="bg-white/20 text-amber-100 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
               Guardian Portal
             </span>
             <h1 className="text-2xl font-extrabold tracking-tight">Child Progress & Performance</h1>
@@ -392,63 +380,66 @@ export default function Dashboard() {
     );
   }
 
-  // Role 6: STUDENT DASHBOARD (ULTRA STUNNING APP STYLE PROFILE HERO)
+  // Role 6: STUDENT DASHBOARD (STUNNING MODERN APP PROFILE CARD)
   return (
     <div className="space-y-6">
       
-      {/* High-End Glassmorphic Student Hero Banner */}
-      <div className="bg-gradient-to-r from-brand-600 via-indigo-600 to-blue-600 rounded-2xl p-6 lg:p-7 text-white shadow-xl shadow-brand-500/15 relative overflow-hidden border border-white/10">
-        
-        {/* Glow Decor Background Blob */}
-        <div className="absolute right-0 top-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+      {/* Outstanding Centered Circular Profile Card */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-md overflow-hidden relative">
+        {/* Top Cover Banner */}
+        <div className="h-32 sm:h-36 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 relative overflow-hidden flex items-center justify-end p-4">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-black/20 pointer-events-none"></div>
+          {/* Session Selector Badge in top-right of banner */}
+          <div className="relative z-10 bg-black/20 backdrop-blur-md border border-white/20 rounded-xl px-3 py-1.5 flex items-center gap-2">
+            <Calendar className="w-3.5 h-3.5 text-white/80" />
+            <select 
+              value={selectedSession}
+              onChange={e => setSelectedSession(e.target.value)}
+              className="bg-transparent font-bold text-white text-xs focus:outline-none cursor-pointer pr-1"
+            >
+              <option value="2026-2027" className="text-slate-900">2026-2027 Session</option>
+              <option value="2025-2026" className="text-slate-900">2025-2026 Session</option>
+            </select>
+          </div>
+        </div>
 
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
-          
-          {/* Avatar Ring & Info Group */}
-          <div className="flex items-center gap-5">
-            <div className="relative shrink-0">
-              <img 
-                src={currentUser?.avatar || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=250"} 
-                alt={currentUser?.name} 
-                className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl object-cover border-2 border-white/90 shadow-lg shadow-black/20"
-              />
-              <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 border-2 border-white rounded-full flex items-center justify-center text-[10px] font-black text-slate-900 shadow-xs">
-                ✓
-              </span>
-            </div>
-
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-black tracking-tight leading-tight">{currentUser?.name || "Ethan Miller"}</h1>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-brand-100">
-                <span className="bg-white/15 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-                  Class: <strong>{currentUser?.class || 'Grade 10'} ({currentUser?.section || 'Section A'})</strong>
-                </span>
-                <span className="bg-white/15 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 font-mono">
-                  Adm No: <strong>{currentUser?.admissionNo || 'STU-2026-0042'}</strong>
-                </span>
-              </div>
-            </div>
+        {/* Profile Card Body */}
+        <div className="px-6 pb-6 text-center relative">
+          {/* Centered Circular Profile Photo - Half outside top banner */}
+          <div className="relative inline-block -mt-16 sm:-mt-20 z-10">
+            <img 
+              src={currentUser?.avatar || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=250"} 
+              alt={currentUser?.name || "Ethan Miller"} 
+              className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-xl object-cover bg-white mx-auto"
+            />
+            <span className="absolute bottom-1 right-2 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full shadow-sm" title="Active Student"></span>
           </div>
 
-          {/* Clean Glass Session Selector */}
-          <div className="bg-white/15 backdrop-blur-md border border-white/20 rounded-xl p-3 shrink-0 self-stretch md:self-auto flex items-center justify-between gap-3 shadow-xs">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-brand-200" />
-              <div>
-                <span className="text-[10px] font-bold text-brand-200 uppercase tracking-wider block">Academic Session</span>
-                <select 
-                  value={selectedSession}
-                  onChange={e => setSelectedSession(e.target.value)}
-                  className="bg-transparent font-extrabold text-white text-xs focus:outline-none cursor-pointer pr-2"
-                >
-                  <option value="2026-2027" className="text-slate-900 font-bold">2026-2027 Session</option>
-                  <option value="2025-2026" className="text-slate-900 font-bold">2025-2026 Session</option>
-                </select>
-              </div>
-            </div>
+          {/* 1. Name on Card */}
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-3">
+            {currentUser?.name || "Ethan Miller"}
+          </h1>
+
+          {/* 2. Class Section */}
+          <div className="mt-1 flex items-center justify-center gap-2 text-slate-600 font-semibold text-xs sm:text-sm">
+            <GraduationCap className="w-4 h-4 text-brand-600" />
+            <span>Class: <strong className="text-slate-900">{currentUser?.class || 'Grade 10'} ({currentUser?.section || 'Section A'})</strong></span>
+          </div>
+
+          {/* 3. Admission Number */}
+          <div className="mt-2 flex items-center justify-center gap-2 text-slate-500 text-xs">
+            <Hash className="w-3.5 h-3.5 text-slate-400" />
+            <span>Admission No: <strong className="font-mono text-slate-800 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-md">{currentUser?.admissionNo || 'STU-2026-0042'}</strong></span>
+          </div>
+
+          {/* 4. Academic Session */}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            <span className="bg-brand-50 text-brand-700 border border-brand-200 px-3.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs">
+              <Calendar className="w-3.5 h-3.5" /> Academic Session: {selectedSession}
+            </span>
+            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs">
+              <CheckCircle2 className="w-3.5 h-3.5" /> 96% Attendance
+            </span>
           </div>
 
         </div>
@@ -457,71 +448,65 @@ export default function Dashboard() {
       {/* Student Metric Highlights */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
-        <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-brand-300 transition-all space-y-2">
+        <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-slate-300 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Terminal Average</span>
-            <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <Award className="w-5 h-5" />
+            <span className="text-xs font-bold text-slate-400 uppercase">Terminal Average</span>
+            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <Award className="w-4.5 h-4.5" />
             </div>
           </div>
-          <div>
+          <div className="mt-2.5">
             <div className="text-2xl font-black text-slate-900">88.3%</div>
-            <span className="text-xs font-bold text-emerald-600 mt-0.5 inline-block bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
-              Grade A+ (Outstanding)
-            </span>
+            <span className="text-xs text-emerald-600 font-bold mt-0.5 block">Grade A+ (Outstanding)</span>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-brand-300 transition-all space-y-2">
+        <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-slate-300 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Class Rank</span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5" />
+            <span className="text-xs font-bold text-slate-400 uppercase">Class Rank</span>
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <TrendingUp className="w-4.5 h-4.5" />
             </div>
           </div>
-          <div>
+          <div className="mt-2.5">
             <div className="text-2xl font-black text-slate-900">Rank 1</div>
-            <span className="text-xs font-bold text-emerald-600 mt-0.5 inline-block bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
-              Top Student in Grade 10A
-            </span>
+            <span className="text-xs text-emerald-600 font-bold mt-0.5 block">Top Performer in Grade 10A</span>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-brand-300 transition-all space-y-2">
+        <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-xs hover:border-slate-300 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Attendance Rate</span>
-            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5" />
+            <span className="text-xs font-bold text-slate-400 uppercase">Attendance Rate</span>
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+              <CheckCircle2 className="w-4.5 h-4.5" />
             </div>
           </div>
-          <div>
+          <div className="mt-2.5">
             <div className="text-2xl font-black text-slate-900">96%</div>
-            <span className="text-xs font-bold text-slate-500 mt-0.5 inline-block bg-slate-100 px-2 py-0.5 rounded-full">
-              24 / 25 School Days Attended
-            </span>
+            <span className="text-xs text-slate-500 font-semibold mt-0.5 block">24 / 25 School Days</span>
           </div>
         </div>
 
       </div>
 
-      {/* Course Scores & Schedule Grid */}
+      {/* Course Marks & Schedule Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Course Scores List (Left 2 cols) */}
         <div className="lg:col-span-2 bg-white border border-slate-200/80 rounded-xl p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-900">My Course Evaluation Scores</h2>
-            <span className="text-xs font-bold text-brand-700 bg-brand-50 border border-brand-200 px-3 py-1 rounded-full">
+            <h2 className="text-sm font-bold text-slate-900">My Course Performance Scores</h2>
+            <span className="text-xs font-bold text-brand-600 bg-brand-50 border border-brand-100 px-2.5 py-1 rounded-full">
               First Term
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {marks.slice(0, 3).map(m => (
-              <div key={m.id} className="p-4 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-2 hover:bg-white hover:shadow-xs transition-all">
+              <div key={m.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
                 <div className="text-xs font-bold text-slate-900">{m.subject}</div>
                 <div className="text-2xl font-black text-brand-600">{m.total} <span className="text-xs text-slate-400 font-normal">/ 100</span></div>
-                <span className="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">
+                <span className="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md">
                   Grade {m.grade} ({m.remarks})
                 </span>
               </div>
@@ -538,12 +523,12 @@ export default function Dashboard() {
 
           <div className="space-y-2">
             {timetable.slice(0, 4).map((t, idx) => (
-              <div key={idx} className="p-3 bg-slate-50 border border-slate-200/60 rounded-xl flex items-center justify-between hover:bg-white transition-colors">
+              <div key={idx} className="p-3 bg-slate-50 border border-slate-200/60 rounded-xl flex items-center justify-between">
                 <div>
                   <div className="text-xs font-bold text-slate-900">{t.subject}</div>
                   <div className="text-[11px] text-slate-500">{t.room} &bull; {t.teacher}</div>
                 </div>
-                <span className="text-[11px] font-bold bg-white border border-slate-200 px-2.5 py-1 rounded-md text-brand-600 font-mono shadow-2xs">
+                <span className="text-[11px] font-bold bg-white border border-slate-200 px-2 py-1 rounded-md text-brand-600 font-mono">
                   {t.time}
                 </span>
               </div>
