@@ -25,7 +25,7 @@
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_KEY": "base64:9r+8+z3x+K7J1m2N3O4P5Q6R7S8T9U0V1W2X3Y4Z5A6=",
-        "APP_URL": "https://as-school-erp-git-master-lovechn1407-6630s-projects.vercel.app",
+        "APP_URL": "https://as-school-erp.vercel.app",
         "DB_CONNECTION": "pgsql",
         "DB_HOST": "aws-0-ap-south-1.pooler.supabase.com",
         "DB_PORT": "5432",
