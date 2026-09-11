@@ -25,6 +25,7 @@
         "DB_PORT": "5432",
         "DB_DATABASE": "postgres",
         "DB_USERNAME": "postgres",
+        "DB_PASSWORD": "Welcome@8383090874",
         "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
