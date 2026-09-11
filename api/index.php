@@ -1,5 +1,12 @@
 <?php
 
+// Force HTTPS for Vercel serverless environment to prevent Mixed Content blocking
+$_SERVER['HTTPS'] = 'on';
+$_SERVER['SERVER_PORT'] = 443;
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+}
+
 // ===================================================================
 // CRITICAL: Suppress PHP 8.1+ deprecation notices BEFORE everything.
 // Laravel 8.42 is not PHP 8.1+ compatible (missing #[ReturnTypeWillChange]).
