@@ -1,5 +1,13 @@
-#!/usr/bin/env php
 <?php
+
+// Intercept and suppress PHP 8 deprecation warnings globally
+set_error_handler(function ($level, $message, $file = '', $line = 0) {
+    if ($level === E_DEPRECATED || $level === E_USER_DEPRECATED) {
+        return true;
+    }
+    return false;
+});
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
 define('LARAVEL_START', microtime(true));
 
