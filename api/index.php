@@ -1,5 +1,8 @@
 <?php
 
+// Suppress PHP 8+ deprecation warnings from legacy dependencies
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
 // Forward Vercel requests to Laravel public/index.php
 
 // Ensure essential storage folders exist in serverless /tmp environment
