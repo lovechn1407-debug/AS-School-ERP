@@ -15,48 +15,49 @@ import {
   FolderTree,
   UserPlus,
   Receipt,
-  X
+  X,
+  UserCheck
 } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIsMobileOpen }) {
-  const { currentUser, setCurrentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
 
   const getNavItems = () => {
-    switch(currentUser.role) {
+    switch(currentUser?.role) {
       case 'super_admin':
         return [
-          { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-          { id: 'settings', label: 'System Settings', icon: Settings },
+          { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
+          { id: 'settings', label: 'System Configuration', icon: Settings },
           { id: 'users', label: 'User Directory', icon: Users },
           { id: 'classes', label: 'Classes & Sections', icon: Layers },
-          { id: 'subjects', label: 'Subjects', icon: BookOpen },
-          { id: 'dorms', label: 'Dormitories', icon: Home },
-          { id: 'admissions', label: 'Student Admission', icon: UserPlus },
-          { id: 'promotions', label: 'Student Promotion', icon: FolderTree },
-          { id: 'marks', label: 'Exams & Marks', icon: FileSpreadsheet },
+          { id: 'subjects', label: 'Course Subjects', icon: BookOpen },
+          { id: 'dorms', label: 'Hostel Dormitories', icon: Home },
+          { id: 'admissions', label: 'Student Admissions', icon: UserPlus },
+          { id: 'promotions', label: 'Student Promotions', icon: FolderTree },
+          { id: 'marks', label: 'Exams & Evaluation', icon: FileSpreadsheet },
           { id: 'tabulation', label: 'Tabulation Sheet', icon: Award },
           { id: 'invoices', label: 'Fee Invoices', icon: CreditCard },
           { id: 'receipts', label: 'Payment Receipts', icon: Receipt },
-          { id: 'timetable', label: 'Class Timetables', icon: Clock }
+          { id: 'timetable', label: 'Master Timetable', icon: Clock }
         ];
 
       case 'admin':
         return [
-          { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+          { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
           { id: 'classes', label: 'Classes & Sections', icon: Layers },
-          { id: 'subjects', label: 'Subjects', icon: BookOpen },
-          { id: 'dorms', label: 'Dormitories', icon: Home },
-          { id: 'admissions', label: 'Student Admission', icon: UserPlus },
-          { id: 'promotions', label: 'Student Promotion', icon: FolderTree },
-          { id: 'users', label: 'Users Directory', icon: Users }
+          { id: 'subjects', label: 'Course Subjects', icon: BookOpen },
+          { id: 'dorms', label: 'Hostel Dormitories', icon: Home },
+          { id: 'admissions', label: 'Student Admissions', icon: UserPlus },
+          { id: 'promotions', label: 'Student Promotions', icon: FolderTree },
+          { id: 'users', label: 'User Directory', icon: Users }
         ];
 
       case 'teacher':
         return [
           { id: 'dashboard', label: 'Teacher Dashboard', icon: LayoutDashboard },
           { id: 'marks', label: 'Marks Entry Matrix', icon: FileSpreadsheet },
-          { id: 'tabulation', label: 'Tabulation Sheets', icon: Award },
-          { id: 'timetable', label: 'My Teaching Schedule', icon: Clock }
+          { id: 'tabulation', label: 'Class Tabulation', icon: Award },
+          { id: 'timetable', label: 'Teaching Schedule', icon: Clock }
         ];
 
       case 'accountant':
@@ -85,7 +86,7 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
 
       default:
         return [
-          { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard }
+          { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard }
         ];
     }
   };
@@ -98,26 +99,23 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
   };
 
   const sidebarContent = (
-    <div className="h-full flex flex-col justify-between p-4 space-y-6">
-      <div className="space-y-6">
+    <div className="h-full flex flex-col justify-between p-4">
+      <div className="space-y-5">
         
         {/* User Card Header */}
-        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 flex items-center justify-between">
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
           <div className="flex items-center gap-3 overflow-hidden">
             <img 
-              src={currentUser.avatar} 
-              alt={currentUser.name} 
-              className="w-10 h-10 rounded-full object-cover border-2 border-brand-500 shadow-sm shrink-0"
+              src={currentUser?.avatar} 
+              alt={currentUser?.name} 
+              className="w-9 h-9 rounded-lg object-cover border border-slate-300 shrink-0"
             />
             <div className="overflow-hidden">
-              <h3 className="text-xs font-bold text-slate-900 truncate">{currentUser.name}</h3>
-              <span className="inline-block px-2 py-0.5 mt-0.5 rounded-full text-[10px] font-semibold bg-brand-100 text-brand-700 capitalize">
-                {currentUser.user_type}
-              </span>
+              <h3 className="text-xs font-bold text-slate-900 truncate">{currentUser?.name}</h3>
+              <span className="text-[10px] font-medium text-slate-500 truncate block">{currentUser?.email}</span>
             </div>
           </div>
-          
-          {/* Mobile Drawer Close Button */}
+
           {setIsMobileOpen && (
             <button 
               onClick={() => setIsMobileOpen(false)} 
@@ -129,9 +127,9 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
         </div>
 
         {/* Navigation List */}
-        <div className="overflow-y-auto max-h-[calc(100vh-250px)] custom-scrollbar">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2 block">
-            Navigation Menu
+        <div className="overflow-y-auto max-h-[calc(100vh-240px)] custom-scrollbar">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 block">
+            Navigation
           </span>
           <nav className="space-y-1">
             {navItems.map(item => {
@@ -141,13 +139,13 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
                     isActive 
-                      ? 'bg-brand-50 text-brand-700 font-bold border border-brand-200/60 shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      ? 'bg-brand-600 text-white font-bold shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-brand-600' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   {item.label}
                 </button>
               );
@@ -157,14 +155,14 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
 
       </div>
 
-      {/* Footer / Account Settings */}
-      <div className="pt-3 border-t border-slate-100">
+      {/* Footer Settings & Sign Out */}
+      <div className="pt-3 border-t border-slate-200 space-y-1">
         <button
           onClick={() => handleNavClick('profile')}
-          className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
             activePage === 'profile'
               ? 'bg-brand-50 text-brand-700 font-bold border border-brand-200'
-              : 'text-slate-600 hover:bg-slate-50'
+              : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Settings className="w-4 h-4 text-slate-400" />
@@ -172,8 +170,8 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
         </button>
 
         <button
-          onClick={() => setCurrentUser(null)}
-          className="w-full mt-1 flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-all"
+          onClick={logout}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-all"
         >
           <LogOut className="w-4 h-4 text-rose-500" />
           Sign Out
@@ -189,7 +187,7 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
         {sidebarContent}
       </aside>
 
-      {/* Mobile Slide-Out Drawer Backdrop */}
+      {/* Mobile Drawer Overlay */}
       {isMobileOpen && (
         <div 
           className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 md:hidden"
@@ -197,7 +195,7 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
         />
       )}
 
-      {/* Mobile Slide-Out Drawer Content */}
+      {/* Mobile Drawer Sidebar */}
       <aside className={`fixed top-0 left-0 bottom-0 w-72 bg-white z-50 shadow-2xl transition-transform duration-300 md:hidden ${
         isMobileOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>

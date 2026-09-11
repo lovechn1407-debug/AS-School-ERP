@@ -1,79 +1,44 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  GraduationCap, 
-  Menu, 
-  X,
-  LogOut,
-  User
-} from 'lucide-react';
+import { Menu, GraduationCap, Calendar } from 'lucide-react';
 
 export default function Navbar({ activePage, setActivePage, isMobileOpen, setIsMobileOpen }) {
-  const { currentUser, logout, settings } = useAuth();
+  const { currentUser, settings } = useAuth();
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm px-4 lg:px-8 py-3">
-      <div className="flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-xs px-4 lg:px-8 py-3.5">
+      <div className="flex items-center justify-between relative">
         
-        {/* Left: Mobile Toggle & Brand */}
+        {/* Left: Menu Icon Button */}
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors"
-            aria-label="Toggle Navigation"
+            className="p-2 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors border border-slate-200/80"
+            aria-label="Toggle Menu"
           >
-            {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <Menu className="w-5 h-5" />
           </button>
-
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-500/20 shrink-0">
-              <GraduationCap className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-none">
-                {settings.systemName}
-              </h1>
-              <span className="text-[11px] sm:text-xs font-medium text-slate-500">
-                Session {settings.currentSession} &bull; {settings.currentTerm}
-              </span>
-            </div>
-          </div>
         </div>
 
-        {/* Right: Active Role Badge & Profile / Sign Out */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          
-          {/* Active Role Tag */}
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-brand-50 border border-brand-200 text-brand-700 rounded-full text-xs font-bold capitalize">
-            <User className="w-3.5 h-3.5" />
-            {currentUser.user_type}
+        {/* Center: System Title */}
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 text-center pointer-events-none sm:pointer-events-auto">
+          <div className="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center shadow-xs">
+            <GraduationCap className="w-4 h-4" />
           </div>
+          <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+            {settings.systemName}
+          </h1>
+        </div>
 
-          {/* Profile Badge & Settings */}
-          <button 
-            onClick={() => setActivePage('profile')}
-            className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full p-1 pr-2 sm:pr-3 transition-all"
-          >
-            <img 
-              src={currentUser.avatar} 
-              alt={currentUser.name} 
-              className="w-8 h-8 rounded-full object-cover border border-brand-200"
-            />
-            <div className="text-left hidden sm:block">
-              <div className="text-xs font-bold text-slate-800 leading-tight">{currentUser.name}</div>
-              <div className="text-[10px] font-semibold text-slate-500 truncate max-w-[120px]">{currentUser.email}</div>
-            </div>
-          </button>
-
-          {/* Sign Out Button */}
-          <button
-            onClick={logout}
-            className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
-            title="Sign Out"
-          >
-            <LogOut className="w-5 h-5" />
-          </button>
-
+        {/* Right: Academic Session & Active Role Badge */}
+        <div className="flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200">
+            <Calendar className="w-3.5 h-3.5 text-brand-600" />
+            <span>Session {settings.currentSession}</span>
+          </div>
+          <span className="px-2.5 py-1 bg-brand-50 text-brand-700 border border-brand-200 rounded-lg text-xs font-bold capitalize">
+            {currentUser?.user_type}
+          </span>
         </div>
 
       </div>
