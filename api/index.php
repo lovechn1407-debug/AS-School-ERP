@@ -9,19 +9,26 @@ error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 ini_set('error_reporting', (string)(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED));
 ini_set('display_errors', '0');
 
-// Ensure essential storage folders exist in serverless /tmp environment
+// Ensure essential storage and bootstrap folders exist in serverless /tmp environment
 $storageDirs = [
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/cache/data',
     '/tmp/storage/framework/sessions',
     '/tmp/storage/logs',
     '/tmp/storage/app/public',
+    '/tmp/bootstrap/cache',
 ];
 
 foreach ($storageDirs as $dir) {
     if (!is_dir($dir)) {
         @mkdir($dir, 0755, true);
     }
+}
+
+// Copy services.php from original bootstrap/cache if it exists
+$originalServicesPath = __DIR__ . '/../bootstrap/cache/services.php';
+if (file_exists($originalServicesPath) && !file_exists('/tmp/bootstrap/cache/services.php')) {
+    @copy($originalServicesPath, '/tmp/bootstrap/cache/services.php');
 }
 
 putenv('VIEW_COMPILED_PATH=/tmp/storage/framework/views');
@@ -36,6 +43,9 @@ $app = require_once __DIR__ . '/../bootstrap/app.php';
 if (method_exists($app, 'useStoragePath')) {
     $app->useStoragePath('/tmp/storage');
 }
+
+// Redirect bootstrap cache to writable /tmp directory
+$app->instance('path.bootstrap.cache', '/tmp/bootstrap/cache');
 
 // ===================================================================
 // Override Laravel's HandleExceptions error handler.
