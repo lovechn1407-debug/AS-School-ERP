@@ -33,6 +33,21 @@ if (file_exists($originalServicesPath) && !file_exists('/tmp/bootstrap/cache/ser
 
 putenv('VIEW_COMPILED_PATH=/tmp/storage/framework/views');
 
+// CRITICAL: Set cache paths BEFORE the Application is constructed.
+// Laravel's PackageManifest reads these env vars in the Application constructor.
+// If not set, it defaults to bootstrap/cache/ which is read-only on Vercel.
+putenv('APP_PACKAGES_CACHE=/tmp/bootstrap/cache/packages.php');
+putenv('APP_SERVICES_CACHE=/tmp/bootstrap/cache/services.php');
+putenv('APP_CONFIG_CACHE=/tmp/bootstrap/cache/config.php');
+putenv('APP_ROUTES_CACHE=/tmp/bootstrap/cache/routes.php');
+putenv('APP_EVENTS_CACHE=/tmp/bootstrap/cache/events.php');
+
+$_ENV['APP_PACKAGES_CACHE'] = '/tmp/bootstrap/cache/packages.php';
+$_ENV['APP_SERVICES_CACHE'] = '/tmp/bootstrap/cache/services.php';
+$_ENV['APP_CONFIG_CACHE'] = '/tmp/bootstrap/cache/config.php';
+$_ENV['APP_ROUTES_CACHE'] = '/tmp/bootstrap/cache/routes.php';
+$_ENV['APP_EVENTS_CACHE'] = '/tmp/bootstrap/cache/events.php';
+
 define('LARAVEL_START', microtime(true));
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -43,9 +58,6 @@ $app = require_once __DIR__ . '/../bootstrap/app.php';
 if (method_exists($app, 'useStoragePath')) {
     $app->useStoragePath('/tmp/storage');
 }
-
-// Redirect bootstrap cache to writable /tmp directory
-$app->instance('path.bootstrap.cache', '/tmp/bootstrap/cache');
 
 // ===================================================================
 // Override Laravel's HandleExceptions error handler.
