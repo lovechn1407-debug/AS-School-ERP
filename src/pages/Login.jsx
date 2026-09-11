@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Key, CheckCircle2 } from 'lucide-react';
+import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 
 export default function Login() {
   const { loginWithEmail, settings } = useAuth();
@@ -10,15 +10,6 @@ export default function Login() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const sampleAccounts = [
-    { role: 'Super Admin', email: 'superadmin@cjinspired.edu', pass: 'password123', tag: 'System Super Admin' },
-    { role: 'Admin', email: 'admin@cjinspired.edu', pass: 'password123', tag: 'School Administrator' },
-    { role: 'Teacher', email: 'teacher@cjinspired.edu', pass: 'password123', tag: 'Senior Educator' },
-    { role: 'Accountant', email: 'accountant@cjinspired.edu', pass: 'password123', tag: 'Finance Manager' },
-    { role: 'Parent', email: 'parent@cjinspired.edu', pass: 'password123', tag: 'Guardian Portal' },
-    { role: 'Student', email: 'student@cjinspired.edu', pass: 'password123', tag: 'Student Portal' }
-  ];
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -27,73 +18,37 @@ export default function Login() {
     try {
       await loginWithEmail(email, password);
     } catch (err) {
-      setError(err.message || 'Authentication failed. Please check your credentials.');
+      setError(err.message || 'Invalid email address or password.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFillAccount = (accEmail, accPass) => {
-    setEmail(accEmail);
-    setPassword(accPass);
-    setError('');
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/50 to-slate-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8 items-center">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-6">
         
-        {/* Left Side: Brand & Quick Credential Fill Cards */}
-        <div className="space-y-6">
-          <div className="inline-flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-slate-200 shadow-sm">
-            <div className="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-500/20">
-              <GraduationCap className="w-5 h-5" />
-            </div>
-            <span className="font-bold text-slate-900 text-base tracking-tight">{settings.systemName}</span>
+        {/* Brand Header */}
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-500/25">
+            <GraduationCap className="w-8 h-8" />
           </div>
-
-          <div className="space-y-2">
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
-              School Management ERP Login Portal
-            </h1>
-            <p className="text-slate-500 text-sm leading-relaxed">
-              Sign in with your email address and password to access your role-based dashboard.
-            </p>
-          </div>
-
-          {/* Preset User Accounts */}
-          <div className="space-y-2.5">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
-              <Key className="w-3.5 h-3.5 text-brand-600" /> Pre-Configured Accounts (Click to Fill):
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {sampleAccounts.map(acc => (
-                <button
-                  key={acc.email}
-                  type="button"
-                  onClick={() => handleFillAccount(acc.email, acc.pass)}
-                  className="p-2.5 bg-white hover:bg-slate-100/90 border border-slate-200 rounded-xl text-left transition-all group hover:border-brand-300 shadow-xs"
-                >
-                  <div className="text-xs font-bold text-slate-900 group-hover:text-brand-600 transition-colors">
-                    {acc.role}
-                  </div>
-                  <div className="text-[10px] text-slate-500 font-mono truncate">{acc.email}</div>
-                </button>
-              ))}
-            </div>
+          <div>
+            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">{settings.systemName}</h1>
+            <p className="text-xs text-slate-500 mt-1 font-medium">Official School ERP Management Portal</p>
           </div>
         </div>
 
-        {/* Right Side: Auth Card */}
+        {/* Login Form Card */}
         <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-200/80 space-y-6">
           
-          <div className="text-center space-y-1">
-            <h2 className="text-xl font-extrabold text-slate-900">Sign in to your account</h2>
-            <p className="text-xs text-slate-500">Enter your email and password below</p>
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold text-slate-900">Sign in to your account</h2>
+            <p className="text-xs text-slate-500">Enter your credentials to access your dashboard</p>
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold p-3 rounded-2xl">
+            <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold p-3.5 rounded-2xl">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
               <span>{error}</span>
             </div>
@@ -111,7 +66,7 @@ export default function Login() {
                   required
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  placeholder="superadmin@cjinspired.edu" 
+                  placeholder="Enter your registered email" 
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-brand-500 focus:outline-none transition-all"
                 />
               </div>
@@ -127,7 +82,7 @@ export default function Login() {
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••" 
+                  placeholder="Enter your password" 
                   className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-brand-500 focus:outline-none transition-all"
                 />
                 <button
@@ -161,6 +116,11 @@ export default function Login() {
             </button>
 
           </form>
+        </div>
+
+        {/* Footer info */}
+        <div className="text-center text-[11px] text-slate-400 font-medium">
+          &copy; {new Date().getFullYear()} {settings.systemName}. All rights reserved.
         </div>
 
       </div>
