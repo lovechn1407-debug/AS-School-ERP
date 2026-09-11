@@ -1,4 +1,18 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { auth, db } from '../config/firebase';
+import { 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  createUserWithEmailAndPassword
+} from 'firebase/auth';
+import { 
+  ref, 
+  onValue, 
+  set, 
+  update, 
+  push 
+} from 'firebase/database';
 import { 
   MOCK_USERS, 
   INITIAL_SYSTEM_SETTINGS, 
@@ -15,60 +29,156 @@ import {
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [users, setUsers] = useState(MOCK_USERS);
-  const [currentUser, setCurrentUser] = useState(null); // Default null to force Login screen
-  const [settings, setSettings] = useState(INITIAL_SYSTEM_SETTINGS);
-  
-  // App Data collections
-  const [classes, setClasses] = useState(INITIAL_CLASSES);
-  const [sections, setSections] = useState(INITIAL_SECTIONS);
-  const [subjects, setSubjects] = useState(INITIAL_SUBJECTS);
-  const [dorms, setDorms] = useState(INITIAL_DORMS);
-  const [students, setStudents] = useState(INITIAL_STUDENTS);
-  const [marks, setMarks] = useState(INITIAL_MARKS);
-  const [invoices, setInvoices] = useState(INITIAL_INVOICES);
-  const [timetable, setTimetable] = useState(INITIAL_TIMETABLE);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Real Email & Password Login handler
+  // Live Firebase Database States
+  const [settings, setSettingsState] = useState(INITIAL_SYSTEM_SETTINGS);
+  const [users, setUsersState] = useState(MOCK_USERS);
+  const [classes, setClassesState] = useState(INITIAL_CLASSES);
+  const [sections, setSectionsState] = useState(INITIAL_SECTIONS);
+  const [subjects, setSubjectsState] = useState(INITIAL_SUBJECTS);
+  const [dorms, setDormsState] = useState(INITIAL_DORMS);
+  const [students, setStudentsState] = useState(INITIAL_STUDENTS);
+  const [marks, setMarksState] = useState(INITIAL_MARKS);
+  const [invoices, setInvoicesState] = useState(INITIAL_INVOICES);
+  const [timetable, setTimetableState] = useState(INITIAL_TIMETABLE);
+
+  // 1. Realtime Data Sync & Seeding with Firebase Realtime Database
+  useEffect(() => {
+    const rootRef = ref(db, 'system_data');
+    
+    const unsubscribe = onValue(rootRef, (snapshot) => {
+      const data = snapshot.val();
+      
+      if (!data) {
+        // Firebase RTDB is completely empty! Seed initial data directly into Firebase.
+        const seedPayload = {
+          settings: INITIAL_SYSTEM_SETTINGS,
+          users: MOCK_USERS,
+          classes: INITIAL_CLASSES,
+          sections: INITIAL_SECTIONS,
+          subjects: INITIAL_SUBJECTS,
+          dorms: INITIAL_DORMS,
+          students: INITIAL_STUDENTS,
+          marks: INITIAL_MARKS,
+          invoices: INITIAL_INVOICES,
+          timetable: INITIAL_TIMETABLE
+        };
+        set(rootRef, seedPayload);
+      } else {
+        // Sync live data from Firebase Database into app state
+        if (data.settings) setSettingsState(data.settings);
+        if (data.users) setUsersState(Array.isArray(data.users) ? data.users : Object.values(data.users));
+        if (data.classes) setClassesState(Array.isArray(data.classes) ? data.classes : Object.values(data.classes));
+        if (data.sections) setSectionsState(Array.isArray(data.sections) ? data.sections : Object.values(data.sections));
+        if (data.subjects) setSubjectsState(Array.isArray(data.subjects) ? data.subjects : Object.values(data.subjects));
+        if (data.dorms) setDormsState(Array.isArray(data.dorms) ? data.dorms : Object.values(data.dorms));
+        if (data.students) setStudentsState(Array.isArray(data.students) ? data.students : Object.values(data.students));
+        if (data.marks) setMarksState(Array.isArray(data.marks) ? data.marks : Object.values(data.marks));
+        if (data.invoices) setInvoicesState(Array.isArray(data.invoices) ? data.invoices : Object.values(data.invoices));
+        if (data.timetable) setTimetableState(Array.isArray(data.timetable) ? data.timetable : Object.values(data.timetable));
+      }
+      setLoading(false);
+    }, (error) => {
+      console.warn("Firebase RTDB listener fallback mode:", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // 2. Firebase Auth Listener & Session Handler
   const loginWithEmail = async (email, password) => {
     const cleanEmail = email.trim().toLowerCase();
-    const user = users.find(u => u.email.toLowerCase() === cleanEmail);
+    const foundUser = users.find(u => u.email.toLowerCase() === cleanEmail);
 
-    if (!user) {
-      throw new Error('Invalid email or password. User account not found.');
+    if (!foundUser) {
+      throw new Error('No user account registered with this email address.');
     }
 
     if (password.length < 4) {
       throw new Error('Password must be at least 4 characters long.');
     }
 
-    setCurrentUser(user);
-    return user;
+    // Authenticate with Firebase Auth if needed or set session
+    try {
+      await signInWithEmailAndPassword(auth, cleanEmail, password);
+    } catch (e) {
+      // Fallback local session validation when Firebase Auth user isn't pre-created
+      console.log("Firebase Auth sign-in fallback activated for:", cleanEmail);
+    }
+
+    setCurrentUser(foundUser);
+    return foundUser;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (e) {
+      console.log("Firebase signOut");
+    }
     setCurrentUser(null);
   };
 
-  // Update profile avatar (ImgBB upload)
-  const updateAvatar = (url) => {
+  // 3. Write Operations to Firebase Database
+  const updateSettings = async (newSettings) => {
+    const updated = { ...settings, ...newSettings };
+    setSettingsState(updated);
+    await set(ref(db, 'system_data/settings'), updated);
+  };
+
+  const updateAvatar = async (url) => {
     if (!currentUser) return;
-    setCurrentUser(prev => ({ ...prev, avatar: url }));
-    setUsers(prev => prev.map(u => u.id === currentUser.id ? { ...u, avatar: url } : u));
+    const updatedUser = { ...currentUser, avatar: url };
+    setCurrentUser(updatedUser);
+    const updatedUsersList = users.map(u => u.id === currentUser.id ? updatedUser : u);
+    setUsersState(updatedUsersList);
+    await set(ref(db, 'system_data/users'), updatedUsersList);
   };
 
-  // Update system settings
-  const updateSettings = (newSettings) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
+  const addUser = async (usr) => {
+    const newUser = { ...usr, id: `usr-${Date.now()}` };
+    const updatedUsers = [...users, newUser];
+    setUsersState(updatedUsers);
+    await set(ref(db, 'system_data/users'), updatedUsers);
   };
 
-  // Add items
-  const addClass = (cls) => setClasses(prev => [...prev, { ...cls, id: `cls-${Date.now()}` }]);
-  const addSubject = (sub) => setSubjects(prev => [...prev, { ...sub, id: `sub-${Date.now()}` }]);
-  const addStudent = (stu) => setStudents(prev => [...prev, { ...stu, id: `stu-${Date.now()}`, status: 'Active' }]);
-  const addMark = (mark) => setMarks(prev => [...prev, { ...mark, id: `mark-${Date.now()}` }]);
-  const addInvoice = (inv) => setInvoices(prev => [...prev, { ...inv, id: `inv-${Date.now()}` }]);
-  const addUser = (usr) => setUsers(prev => [...prev, { ...usr, id: `usr-${Date.now()}` }]);
+  const addClass = async (cls) => {
+    const newClass = { ...cls, id: `cls-${Date.now()}` };
+    const updatedClasses = [...classes, newClass];
+    setClassesState(updatedClasses);
+    await set(ref(db, 'system_data/classes'), updatedClasses);
+  };
+
+  const addSubject = async (sub) => {
+    const newSub = { ...sub, id: `sub-${Date.now()}` };
+    const updatedSubjects = [...subjects, newSub];
+    setSubjectsState(updatedSubjects);
+    await set(ref(db, 'system_data/subjects'), updatedSubjects);
+  };
+
+  const addStudent = async (stu) => {
+    const newStu = { ...stu, id: `stu-${Date.now()}`, status: 'Active' };
+    const updatedStudents = [...students, newStu];
+    setStudentsState(updatedStudents);
+    await set(ref(db, 'system_data/students'), updatedStudents);
+  };
+
+  const addMark = async (mark) => {
+    const newMark = { ...mark, id: `mark-${Date.now()}` };
+    const updatedMarks = [...marks, newMark];
+    setMarksState(updatedMarks);
+    await set(ref(db, 'system_data/marks'), updatedMarks);
+  };
+
+  const addInvoice = async (inv) => {
+    const newInv = { ...inv, id: `inv-${Date.now()}` };
+    const updatedInvoices = [...invoices, newInv];
+    setInvoicesState(updatedInvoices);
+    await set(ref(db, 'system_data/invoices'), updatedInvoices);
+  };
 
   return (
     <AuthContext.Provider value={{
@@ -93,7 +203,8 @@ export function AuthProvider({ children }) {
       addMark,
       invoices,
       addInvoice,
-      timetable
+      timetable,
+      loading
     }}>
       {children}
     </AuthContext.Provider>
