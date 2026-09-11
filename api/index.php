@@ -1,15 +1,13 @@
 <?php
 
-// Intercept and suppress PHP 8.1+ deprecation warnings globally
-set_error_handler(function ($level, $message, $file = '', $line = 0) {
-    if ($level === E_DEPRECATED || $level === E_USER_DEPRECATED) {
-        return true;
-    }
-    return false;
-});
-
+// ===================================================================
+// CRITICAL: Suppress PHP 8.1+ deprecation notices BEFORE everything.
+// Laravel 8.42 is not PHP 8.1+ compatible (missing #[ReturnTypeWillChange]).
+// We must prevent E_DEPRECATED from being converted to ErrorException.
+// ===================================================================
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 ini_set('error_reporting', (string)(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED));
+ini_set('display_errors', '0');
 
 // Ensure essential storage folders exist in serverless /tmp environment
 $storageDirs = [
@@ -39,12 +37,21 @@ if (method_exists($app, 'useStoragePath')) {
     $app->useStoragePath('/tmp/storage');
 }
 
-// Re-enforce deprecation suppression after Laravel bootstraps HandleExceptions
+// ===================================================================
+// Override Laravel's HandleExceptions error handler.
+// Laravel 8.42's HandleExceptions::handleError() converts E_DEPRECATED
+// to ErrorException which crashes the app on PHP 8.1+.
+// We replace it with a handler that silently ignores deprecations.
+// ===================================================================
 set_error_handler(function ($level, $message, $file = '', $line = 0) {
     if ($level === E_DEPRECATED || $level === E_USER_DEPRECATED) {
-        return true;
+        return true; // Swallow deprecation notices
     }
-    return false;
+    // For all other errors, throw ErrorException (Laravel default behavior)
+    if (error_reporting() & $level) {
+        throw new \ErrorException($message, 0, $level, $file, $line);
+    }
+    return true;
 });
 
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);

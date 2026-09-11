@@ -5,18 +5,24 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.4||^8.0",
-        "barryvdh/laravel-dompdf": "^0.9.0",
+        "php": "^7.2",
+        "barryvdh/laravel-dompdf": "^0.8.3",
         "fakerphp/faker": "^1.14",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "hashids/hashids": "^4.1.0",
-        "laravel/framework": "^8.65",
+        "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.0"
     },
-    "require-dev": {},
+    "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.6",
+        "facade/ignition": "^2.5",
+        "mockery/mockery": "^1.4.2",
+        "nunomaduro/collision": "^5.0",
+        "phpunit/phpunit": "^9.3.3"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
@@ -38,19 +44,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true,
-        "platform-check": false,
-        "platform": {
-            "php": "8.1.0",
-            "ext-gd": "2.3.0",
-            "ext-mbstring": "1.0.0",
-            "ext-pdo": "8.1.0",
-            "ext-pgsql": "8.1.0",
-            "ext-openssl": "8.1.0",
-            "ext-json": "8.1.0",
-            "ext-tokenizer": "8.1.0",
-            "ext-xml": "8.1.0",
-            "ext-curl": "8.1.0"
-        }
+        "platform-check": false
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
