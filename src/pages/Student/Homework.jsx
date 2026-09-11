@@ -95,19 +95,16 @@ export default function Homework() {
   return (
     <div className="space-y-6">
       
-      {/* Header Banner */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Clean Page Title (No Top Card Box) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="bg-brand-50 text-brand-700 border border-brand-200 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
-            <BookOpenCheck className="w-4 h-4 text-brand-600" /> Academic Homework
-          </span>
-          <h1 className="text-2xl font-black text-slate-900 mt-2">Class Assignments & Projects</h1>
+          <h1 className="text-2xl font-black text-slate-900">Homework & Assignments</h1>
           <p className="text-slate-500 text-xs mt-0.5">Review assigned coursework, download resources, and track submission deadlines.</p>
         </div>
 
         {/* Controls: Filter & Create Homework Button */}
         <div className="flex items-center gap-2">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 flex items-center gap-2">
+          <div className="bg-white border border-slate-200 rounded-xl px-3 py-2 flex items-center gap-2 shadow-2xs">
             <Filter className="w-4 h-4 text-slate-400" />
             <select 
               value={selectedSubject}
@@ -124,7 +121,7 @@ export default function Homework() {
           {isStaff && (
             <button
               onClick={() => setShowAssignModal(true)}
-              className="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-xs"
+              className="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-xs shrink-0"
             >
               <Plus className="w-4 h-4" /> Create Homework
             </button>

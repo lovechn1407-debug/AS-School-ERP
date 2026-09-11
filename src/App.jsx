@@ -22,7 +22,9 @@ import FeeStatus from './pages/Parent/FeeStatus';
 import Profile from './pages/Profile';
 
 // Student Panel New Pages
-import Attendance from './pages/Student/Attendance';
+import DailyAttendance from './pages/Student/DailyAttendance';
+import PeriodwiseAttendance from './pages/Student/PeriodwiseAttendance';
+import LeaveApplication from './pages/Student/LeaveApplication';
 import Homework from './pages/Student/Homework';
 import Circular from './pages/Student/Circular';
 import PhotoGallery from './pages/Student/PhotoGallery';
@@ -72,12 +74,14 @@ function MainLayout() {
       case 'profile':
         return <Profile />;
       
-      // Student Panel Submenu & Routes
+      // Attendance 3 Separate Pages
       case 'attendance':
+      case 'attendance-daily':
+        return <DailyAttendance />;
       case 'attendance-periodwise':
-        return <Attendance defaultTab="periodwise" />;
+        return <PeriodwiseAttendance />;
       case 'attendance-leave':
-        return <Attendance defaultTab="leave" />;
+        return <LeaveApplication />;
       case 'homework':
         return <Homework />;
       case 'circular':

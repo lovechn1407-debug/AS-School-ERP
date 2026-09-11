@@ -53,11 +53,12 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
           { id: 'promotions', label: 'Student Promotions', icon: FolderTree },
           { 
             id: 'attendance', 
-            label: 'Daily Attendance', 
+            label: 'Attendance', 
             icon: CalendarCheck,
             children: [
-              { id: 'attendance-periodwise', label: 'Attendance Management', icon: Clock },
-              { id: 'attendance-leave', label: 'Leave Approvals', icon: FileText }
+              { id: 'attendance-daily', label: 'Daily Attendance', icon: UserCheck },
+              { id: 'attendance-periodwise', label: 'Periodwise Attendance', icon: Clock },
+              { id: 'attendance-leave', label: 'Leave Application', icon: FileText }
             ]
           },
           { id: 'homework', label: 'Homework Assignments', icon: BookOpenCheck },
@@ -82,11 +83,12 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
           { id: 'promotions', label: 'Student Promotions', icon: FolderTree },
           { 
             id: 'attendance', 
-            label: 'Daily Attendance', 
+            label: 'Attendance', 
             icon: CalendarCheck,
             children: [
-              { id: 'attendance-periodwise', label: 'Attendance Management', icon: Clock },
-              { id: 'attendance-leave', label: 'Leave Approvals', icon: FileText }
+              { id: 'attendance-daily', label: 'Daily Attendance', icon: UserCheck },
+              { id: 'attendance-periodwise', label: 'Periodwise Attendance', icon: Clock },
+              { id: 'attendance-leave', label: 'Leave Application', icon: FileText }
             ]
           },
           { id: 'homework', label: 'Homework Assignments', icon: BookOpenCheck },
@@ -102,11 +104,12 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
           { id: 'dashboard', label: 'Teacher Dashboard', icon: LayoutDashboard },
           { 
             id: 'attendance', 
-            label: 'Daily Attendance', 
+            label: 'Attendance', 
             icon: CalendarCheck,
             children: [
-              { id: 'attendance-periodwise', label: 'Mark Attendance', icon: Clock },
-              { id: 'attendance-leave', label: 'Student Leave Requests', icon: FileText }
+              { id: 'attendance-daily', label: 'Daily Attendance', icon: UserCheck },
+              { id: 'attendance-periodwise', label: 'Periodwise Attendance', icon: Clock },
+              { id: 'attendance-leave', label: 'Leave Application', icon: FileText }
             ]
           },
           { id: 'homework', label: 'Homework & Grading', icon: BookOpenCheck },
@@ -139,9 +142,10 @@ export default function Sidebar({ activePage, setActivePage, isMobileOpen, setIs
           { id: 'dashboard', label: 'Student Dashboard', icon: LayoutDashboard },
           { 
             id: 'attendance', 
-            label: 'Daily Attendance', 
+            label: 'Attendance', 
             icon: CalendarCheck,
             children: [
+              { id: 'attendance-daily', label: 'Daily Attendance', icon: UserCheck },
               { id: 'attendance-periodwise', label: 'Periodwise Attendance', icon: Clock },
               { id: 'attendance-leave', label: 'Leave Application', icon: FileText }
             ]

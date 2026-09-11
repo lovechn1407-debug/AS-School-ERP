@@ -108,26 +108,23 @@ export default function PhotoGallery() {
   return (
     <div className="space-y-6">
       
-      {/* Header Banner */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Clean Page Title (No Top Card Box) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="bg-brand-50 text-brand-700 border border-brand-200 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
-            <ImageIcon className="w-4 h-4 text-brand-600" /> Photo Gallery
-          </span>
-          <h1 className="text-2xl font-black text-slate-900 mt-2">Campus Events & Memories</h1>
+          <h1 className="text-2xl font-black text-slate-900">Photo Gallery</h1>
           <p className="text-slate-500 text-xs mt-0.5">Explore high-resolution event photographs and school celebrations.</p>
         </div>
 
         {/* Category Filters & Staff Upload Action */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+          <div className="flex flex-wrap items-center gap-1.5 bg-white border border-slate-200 p-1 rounded-xl shadow-2xs">
             {['All', 'Academics', 'Sports', 'Cultural', 'Campus Events'].map(cat => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   selectedCategory === cat
-                    ? 'bg-white text-slate-900 shadow-xs'
+                    ? 'bg-brand-600 text-white shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >

@@ -70,15 +70,10 @@ export default function Communication() {
   return (
     <div className="space-y-6">
       
-      {/* Header Banner */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex items-center justify-between">
-        <div>
-          <span className="bg-brand-50 text-brand-700 border border-brand-200 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
-            <MessageSquare className="w-4 h-4 text-brand-600" /> Student Communication
-          </span>
-          <h1 className="text-2xl font-black text-slate-900 mt-2">Teacher & Administration Messages</h1>
-          <p className="text-slate-500 text-xs mt-0.5">Direct messaging channel with class tutors and administrative offices.</p>
-        </div>
+      {/* Clean Page Title (No Top Card Box) */}
+      <div>
+        <h1 className="text-2xl font-black text-slate-900">Communication & Messages</h1>
+        <p className="text-slate-500 text-xs mt-0.5">Direct messaging channel with class tutors and administrative offices.</p>
       </div>
 
       {/* Chat Layout Grid */}

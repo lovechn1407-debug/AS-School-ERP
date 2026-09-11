@@ -92,19 +92,16 @@ export default function Circular() {
   return (
     <div className="space-y-6">
       
-      {/* Header Banner */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Clean Page Title (No Top Card Box) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="bg-brand-50 text-brand-700 border border-brand-200 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
-            <Megaphone className="w-4 h-4 text-brand-600" /> Official Circulars
-          </span>
-          <h1 className="text-2xl font-black text-slate-900 mt-2">School Notices & Directives</h1>
+          <h1 className="text-2xl font-black text-slate-900">School Circulars & Notices</h1>
           <p className="text-slate-500 text-xs mt-0.5">Read administrative announcements and download official PDF notices.</p>
         </div>
 
         {/* Search & Staff Action */}
         <div className="flex items-center gap-2">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 flex items-center gap-2 w-full sm:w-64">
+          <div className="bg-white border border-slate-200 rounded-xl px-3 py-2 flex items-center gap-2 w-full sm:w-64 shadow-2xs">
             <Search className="w-4 h-4 text-slate-400 shrink-0" />
             <input
               type="text"

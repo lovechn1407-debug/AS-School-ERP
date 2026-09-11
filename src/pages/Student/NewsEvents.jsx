@@ -107,13 +107,10 @@ export default function NewsEvents() {
   return (
     <div className="space-y-6">
       
-      {/* Header Banner */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Clean Page Title (No Top Card Box) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="bg-brand-50 text-brand-700 border border-brand-200 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
-            <Newspaper className="w-4 h-4 text-brand-600" /> News & Events
-          </span>
-          <h1 className="text-2xl font-black text-slate-900 mt-2">Campus Bulletins & Event Calendar</h1>
+          <h1 className="text-2xl font-black text-slate-900">News & Events</h1>
           <p className="text-slate-500 text-xs mt-0.5">Stay updated with official school press releases and upcoming campus events.</p>
         </div>
         {/* Staff Action Buttons */}
