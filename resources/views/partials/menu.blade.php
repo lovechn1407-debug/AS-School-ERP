@@ -18,21 +18,21 @@
 
         <!-- User menu -->
         <div class="sidebar-user">
-            <div class="card-body">
-                <div class="media">
+            <div class="card-body p-2">
+                <div class="media align-items-center">
                     <div class="mr-3">
-                        <a href="{{ route('my_account') }}"><img src="{{ Auth::user()->photo }}" width="38" height="38" class="rounded-circle" alt="photo"></a>
+                        <a href="{{ route('my_account') }}"><img src="{{ Auth::user()->photo }}" width="40" height="40" class="rounded-circle shadow-sm" style="object-fit: cover; border: 2px solid var(--brand-100);" alt="photo"></a>
                     </div>
 
                     <div class="media-body">
-                        <div class="media-title font-weight-semibold">{{ Auth::user()->name }}</div>
-                        <div class="font-size-xs opacity-50">
-                            <i class="icon-user font-size-sm"></i> &nbsp;{{ ucwords(str_replace('_', ' ', Auth::user()->user_type)) }}
+                        <div class="media-title font-weight-bold" style="color: var(--text-main); font-size: 0.9rem;">{{ Auth::user()->name }}</div>
+                        <div class="font-size-xs" style="color: var(--text-muted);">
+                            <span class="badge badge-primary py-0 px-2" style="font-size: 0.7rem; font-weight: 500;">{{ ucwords(str_replace('_', ' ', Auth::user()->user_type)) }}</span>
                         </div>
                     </div>
 
-                    <div class="ml-3 align-self-center">
-                        <a href="{{ route('my_account') }}" class="text-white"><i class="icon-cog3"></i></a>
+                    <div class="ml-2 align-self-center">
+                        <a href="{{ route('my_account') }}" class="text-muted"><i class="icon-cog3 font-size-base"></i></a>
                     </div>
                 </div>
             </div>

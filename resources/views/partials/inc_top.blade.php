@@ -13,8 +13,9 @@
 {{--DatePickers--}}
 <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-datepicker.min.css') }}" type="text/css">
 
-{{-- Custom App CSS--}}
+{{-- Custom App CSS & Modern Light Theme --}}
 <link href=" {{ asset('assets/css/qs.css') }}" rel="stylesheet" type="text/css">
+<link href=" {{ asset('assets/css/custom_app_theme.css') }}" rel="stylesheet" type="text/css">
 
 {{--   Core JS files --}}
     <script src="{{ asset('global_assets/js/main/jquery.min.js') }} "></script>
